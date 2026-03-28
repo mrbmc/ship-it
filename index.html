@@ -1555,7 +1555,13 @@ function renderScene(sceneId) {
   container.innerHTML = `
     <div class="scene-tag">${scene.tag}</div>
     <h2 class="scene-title">${scene.title}</h2>
-    <div class="scene-image"><img src="./images/${scene.image}" alt="${scene.image}" /></div>
+    <div class="scene-image"><img
+      src="./images/lg/${scene.image}"
+      srcset="./images/sm/${scene.image} 480w, ./images/lg/${scene.image} 960w"
+      sizes="(max-width: 720px) 100vw, 720px"
+      alt="${scene.title}"
+      loading="lazy"
+    /></div>
     <div class="scene-text">${formatText(scene.text)}</div>
     <div class="scene-divider"><span>your move</span></div>
     <div class="choices-label">What do you do?</div>
@@ -1581,7 +1587,13 @@ function renderEnding(scene, container) {
   container.innerHTML = `
     <div class="scene-tag">${scene.tag}</div>
     <h2 class="scene-title">${scene.title}</h2>
-    <div class="scene-image"><img src="./images/${scene.image}" alt="${scene.image}" /></div>
+    <div class="scene-image"><img
+      src="./images/lg/${scene.image}"
+      srcset="./images/sm/${scene.image} 480w, ./images/lg/${scene.image} 960w"
+      sizes="(max-width: 720px) 100vw, 720px"
+      alt="${scene.title}"
+      loading="lazy"
+    /></div>
     <div class="scene-text">${formatText(scene.text)}</div>
     <div class="outcome">
       <div class="outcome-tag ${isWin ? 'win' : 'lose'}">${isWin ? '✓ OUTCOME' : '◎ OUTCOME'}</div>
