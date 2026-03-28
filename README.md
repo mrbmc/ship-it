@@ -32,10 +32,10 @@ Deadline counts down. It hits zero more than anything else.
 Jump to any scene via URL:
 
 ```
-http://localhost/ux-adventure/?chapter=ch_6
+http://localhost/ux-adventure/?chapter=ch6
 ```
 
-Valid scene IDs: `ch0`, `ch1_a`, `ch1_b`, `ch1_c`, `ch2`, `ch3`, `ch4`, `ch5`, `ch_6`, `ch_6_follow`, `ending_win`, `ending_ship`, `ending_chaos`
+Valid scene IDs: `ch0`, `ch1_a`, `ch1_b`, `ch1_c`, `ch2`, `ch3`, `ch4`, `ch5`, `ch6`, `ch6_follow`, `ending_win`, `ending_ship`, `ending_chaos`
 
 ## Characters
 

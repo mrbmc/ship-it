@@ -603,7 +603,7 @@
     background: var(--surface);
     border: 1px solid var(--border);
     border-radius: var(--space-s);
-    padding: var(--space-l) 0;
+    /*padding: var(--space-l) 0;*/
     margin-bottom: var(--space-m);
     display: flex;
     align-items: center;
@@ -613,6 +613,9 @@
     overflow: hidden;
   }
   .scene-image::after { display: none; }
+  .scene-image img {
+    width: 100%;
+  }
 
   .scene-text {
     font-size: 16px;
@@ -894,6 +897,7 @@ const scenes = [
     tag: 'Your employment record',
     title: 'The Brief Life Of A Mid-Career UX Designer',
     emoji: '🪪',
+    image: 'Badge - Wide Tilted.png',
     text: `Your objective: <strong>ship something real</strong>. Not a deck. Not a prototype that will never be opened again after the demo. Something a real person can use to do their actual job.
 
 You have five years of experience. Enough to know that "let's align on requirements" means the requirements don't exist yet. Enough to have opinions about typefaces. Not quite enough to have stopped doing this.
@@ -929,6 +933,7 @@ Your skills: <strong>Figma</strong>, <strong>stakeholder management</strong>, kn
     tag: 'Monday, 9:02 AM',
     title: 'The Last Minute Request',
     emoji: '📱',
+    image: 'Derek_s Slack - Wide.png',
     text: `Your Slack notification arrives at 9:02 AM. It's from <strong>Derek</strong>, Senior Product Manager, Peloton of toxic positivity, sender of 11 PM "quick syncs."
 
 <em>"Hey! Quick thing. Stakeholder review moved to TOMORROW 2pm. Need mockups for the new onboarding flow. All 14 screens. 'Fully realized.' Also the brand team updated the colors last week, FYI. Excited for this!! 🚀🚀"</em>
@@ -970,6 +975,7 @@ You stare at your 13" laptop screen. Your last project's source files are on a s
     tag: 'Monday, 9:07 AM',
     title: 'The Missing Files',
     emoji: '🗂️',
+    image: 'Figma Archaeology - Full Screen.png',
     text: `You open Figma. The last project file is named <em>"FINAL_v3_REVISED_USE_THIS_ONE_REAL_FINAL.fig"</em>
 
 You open it. It's a graveyard. 47 frames, none named. A component called "Button??" detached into 14 variants. An artboard that just says "ASK CARL" — Carl left the company.
@@ -1011,6 +1017,7 @@ This is your source file.`,
     tag: 'Monday, 9:07 AM',
     title: 'The Negotiation',
     emoji: '💬',
+    image: 'Derek_s AI Suggestion.png',
     text: `You send your scoped proposal. Derek replies in 4 minutes.
 
 <em>"Totally get it but leadership really needs to see the full picture. It's just mockups!! Can't you use AI or something? I saw a tweet that Figma has AI now."</em>
@@ -1053,6 +1060,7 @@ Soren sends a voice note. You can see it's 4 minutes and 12 seconds long. You do
     tag: 'Monday, 9:15 AM',
     title: 'The Caffeinated Clarity',
     emoji: '☕',
+    image: 'Morning Pour-Over.png',
     text: `You make a pour-over. Slowly. Intentionally. You stare out the window for 90 seconds.
 
 You read the message again. You notice something: Derek said "stakeholder review" — not "design review." They're looking for direction, not specs. <strong>You don't need 14 screens. You need a story arc and 5 key moments.</strong>
@@ -1095,6 +1103,7 @@ This is actually good. You feel briefly like yourself.`,
     tag: 'Monday, 11:45 AM',
     title: 'The Design System Of Broken Promises',
     emoji: '🧩',
+    image: 'Abandoned Design System.png',
     text: `You open the design system. It was built 18 months ago by a contractor named <strong>Priya</strong> who is now doing extremely well at a different company.
 
 The system has 3 typefaces. None of them are the new brand font. There's a component called "Card - OLD (do not use)" and one called "Card - NEW" that is visually identical.
@@ -1137,6 +1146,7 @@ The color library has 47 shades of the primary blue. There's a "Dark Mode" page 
     tag: 'Monday, 2:30 PM',
     title: 'The Creative Director Appears',
     emoji: '🎭',
+    image: 'Soren_s Voice Note.png',
     text: `Soren arrives in your DMs. They have listened to a podcast.
 
 <em>"I've been thinking about the brand story. What if the onboarding felt less like a product and more like a… <strong>threshold</strong>? Like the user is crossing into a new version of themselves. I'm seeing: slow dissolves, a lot of negative space, something that feels like Muji meets Dieter Rams but make it warm. Human. Maybe a little unexpected."</em>
@@ -1181,6 +1191,7 @@ Soren adds: <em>"Also I wouldn't use that shade of blue you had last time. It fe
     tag: 'Monday, 5:50 PM',
     title: 'The Machine Protests',
     emoji: '💻',
+    image: 'Quiet Protest.png',
     text: `It is 5:50 PM. You have 11 screens. You need 3 more. Or 5 fewer. Depends who you ask.
 
 Your laptop fan has been running at full capacity since noon. The screen has <strong>a faint pink gradient</strong> on the left side that appeared eight months ago and has been slowly expanding.
@@ -1224,6 +1235,7 @@ Figma autosaves every 30 seconds. You last clicked something approximately 28 se
     tag: 'Tuesday, 1:15 PM',
     title: 'The Forty-Five Minute Window',
     emoji: '⏱️',
+    image: '45 Minutes.png',
     text: `It is 1:15 PM. The presentation is at 2:00 PM.
 
 You have <strong>something</strong>. It's not 14 screens. It's not the threshold feeling Soren mentioned. It doesn't use the new brand colors because you couldn't find the hex codes.
@@ -1242,7 +1254,7 @@ You have 45 minutes.`,
         consequence: 'Clean redirect. Derek feels heard. File stays intact.',
         type: 'good',
         effects: { sanity: -10, credibility: +5, caffeine: -5, deadline: -5 },
-        next: 'ch_6'
+        next: 'ch6'
       },
       {
         letter: 'B',
@@ -1250,7 +1262,7 @@ You have 45 minutes.`,
         consequence: 'He sends a follow-up: "Thoughts?" You still ignore it.',
         type: 'neutral',
         effects: { sanity: -15, credibility: -10, caffeine: 0, deadline: -10 },
-        next: 'ch_6'
+        next: 'ch6'
       },
       {
         letter: 'C',
@@ -1258,17 +1270,18 @@ You have 45 minutes.`,
         consequence: 'Everything. Everything could go wrong.',
         type: 'bad',
         effects: { sanity: -25, credibility: -15, caffeine: -10, deadline: -15 },
-        next: 'ch_6'
+        next: 'ch6'
       }
     ]
   },
 
   // CHAPTER 6 — THE BALENCIAGA REQUEST
   {
-    id: 'ch_6',
+    id: 'ch6',
     tag: 'Wednesday, 10:14 AM',
     title: 'Make It Look Like Balenciaga',
     emoji: '👟',
+    image: 'Freight Meets Fashion.png',
     text: `You survived the stakeholder review. Nothing was approved, but nothing was killed. Progress, by this company's definition.
 
 Then the calendar invite arrives. Subject line: <em>"Homepage — Vision Alignment (15 min)"</em>. It is 47 minutes long.
@@ -1294,7 +1307,7 @@ There is a silence on the call that lasts six full seconds.`,
         type: 'good',
         effects: { sanity: -15, credibility: +5, caffeine: -5, deadline: -10 },
         flags: { balenciaga_reframe: true },
-        next: 'ch_6_follow'
+        next: 'ch6_follow'
       },
       {
         letter: 'B',
@@ -1302,7 +1315,7 @@ There is a silence on the call that lasts six full seconds.`,
         consequence: 'Good UX instinct. Richard says "you know — like Balenciaga."',
         type: 'neutral',
         effects: { sanity: -10, credibility: -10, caffeine: 0, deadline: -5 },
-        next: 'ch_6_follow'
+        next: 'ch6_follow'
       },
       {
         letter: 'C',
@@ -1311,17 +1324,18 @@ There is a silence on the call that lasts six full seconds.`,
         type: 'bad',
         effects: { sanity: -25, credibility: -15, caffeine: -10, deadline: -15 },
         flags: { built_the_balenciaga: true },
-        next: 'ch_6_follow'
+        next: 'ch6_follow'
       }
     ]
   },
 
   // CHAPTER 6b — THE FOLLOW-UP
   {
-    id: 'ch_6_follow',
+    id: 'ch6_follow',
     tag: 'Wednesday, 3:30 PM',
     title: 'The Brief That Cannot Be Briefed',
     emoji: '📋',
+    image: 'The Pivot.png',
     text: `The call ends. You have notes. Your notes say: <em>"premium. authoritative. Balenciaga. black? brutal? trust."</em> And then, in your own handwriting from minute 38: <em>"what does Carol actually need."</em>
 
 You pull up your user research. There isn't much — a usability study from 2021, three NPS scores, and a Typeform that 4 people completed. But it's enough. Carol needs: fast login, clear invoice status, one-click exception flagging, and a dashboard she can screenshot for her manager.
@@ -1364,6 +1378,7 @@ You have a choice about what kind of designer you are today. The laptop fan star
     tag: 'Tuesday, 2:47 PM',
     title: 'Shipped.',
     emoji: '🚢',
+    image: 'Quiet Victory.png',
     text: `The presentation ends. There are nods. A VP says "this is solid direction." Soren says the last screen has good "energy." Derek asks one question about gamification. You say "Phase 2." He nods.
 
 Nothing is approved. Nothing is rejected. A follow-up meeting is scheduled.
@@ -1383,6 +1398,7 @@ You close your laptop. The pink gradient has spread slightly further to the left
     tag: 'Tuesday, 2:00 PM',
     title: 'The Presentation',
     emoji: '🔥',
+    image: 'Design Review Chaos.png',
     text: `You walk into the call with a half-finished gamification concept bolted onto the back of your deck. Screen 14 says "POINTS?? (concept)" in 32pt bold.
 
 The VP opens with: "I love the direction of the first 11 screens."
@@ -1405,6 +1421,7 @@ Next time, trust her earlier.`,
     tag: 'Thursday, 2:15 PM',
     title: 'The Designer In The Room',
     emoji: '🏆',
+    image: 'Quiet Victory.png',
     text: `You present both concepts side by side. "The Balenciaga" on the left: cinematic, black, brutal type, zero navigation, deeply beautiful, completely unusable for freight invoice reconciliation. "The Carol" on the right: confident, spacious, fast, clear — with a dark header that actually does feel premium, because it's built on understanding rather than imitation.
 
 Richard looks at both for a long moment.
@@ -1538,7 +1555,7 @@ function renderScene(sceneId) {
   container.innerHTML = `
     <div class="scene-tag">${scene.tag}</div>
     <h2 class="scene-title">${scene.title}</h2>
-    <div class="scene-image">${scene.emoji}</div>
+    <div class="scene-image"><img src="./images/${scene.image}" alt="${scene.image}" /></div>
     <div class="scene-text">${formatText(scene.text)}</div>
     <div class="scene-divider"><span>your move</span></div>
     <div class="choices-label">What do you do?</div>
@@ -1564,7 +1581,7 @@ function renderEnding(scene, container) {
   container.innerHTML = `
     <div class="scene-tag">${scene.tag}</div>
     <h2 class="scene-title">${scene.title}</h2>
-    <div class="scene-image">${scene.emoji}</div>
+    <div class="scene-image"><img src="./images/${scene.image}" alt="${scene.image}" /></div>
     <div class="scene-text">${formatText(scene.text)}</div>
     <div class="outcome">
       <div class="outcome-tag ${isWin ? 'win' : 'lose'}">${isWin ? '✓ OUTCOME' : '◎ OUTCOME'}</div>
@@ -1841,7 +1858,7 @@ function updateProgress() {
   const chapterMap = {
     'ch0': 0, 'ch1_a': 1, 'ch1_b': 1, 'ch1_c': 1,
     'ch2': 2, 'ch3': 3, 'ch4': 4, 'ch5': 5,
-    'ch_6': 6, 'ch_6_follow': 7,
+    'ch6': 6, 'ch6_follow': 7,
     'ending_ship': 7, 'ending_chaos': 5,
     'ending_win': 7
   };

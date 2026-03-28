@@ -38,11 +38,11 @@ ch1_a             → Chapter 2a: The Missing Files (chose to panic-agree)
 ch1_b             → Chapter 2b: The Negotiation (chose to push back)
 ch1_c             → Chapter 2c: The Caffeinated Clarity (made coffee first)
 ch2               → Chapter 3: The Design System of Broken Promises
-ch3               → Chapter 4: The Creative Director Appears (Marcus)
+ch3               → Chapter 4: The Creative Director Appears (Soren)
 ch4               → Chapter 5: The Machine Protests (laptop freeze)
 ch5               → Chapter 6: The Forty-Five Minute Window (Derek wants gamification)
-ch_6          → Chapter 7: Make It Look Like Balenciaga (CEO brief)
-ch_6_follow   → Chapter 8: The Brief That Cannot Be Briefed
+ch6          → Chapter 7: Make It Look Like Balenciaga (CEO brief)
+ch6_follow   → Chapter 8: The Brief That Cannot Be Briefed
 ending_win  → Win: You Made Carol Visible
 ending_ship       → Win: Shipped
 ending_chaos      → Lose: story ending (made bad ch5 choice)
@@ -52,6 +52,20 @@ ending_chaos      → Lose: story ending (made bad ch5 choice)
 - **Credibility or Deadline → 0**: AI layoff ending (two variants, one per stat)
 - **Sanity → 0**: Burnout — resign, work at Bloom & Co. florist, $14.50/hr, no health insurance, peace
 - **Caffeine → 0**: Burnout — resign, work at pottery studio front desk, Gerald the cat
+
+---
+
+## Typography
+
+Three-font system — each layer has a distinct role:
+
+| Token | Font | Used for |
+|---|---|---|
+| `--serif` | Playfair Display, 400 italic | Story headings: `.scene-title`, `.gameover-title`, `.outcome-title` |
+| `--sans` | Inter | Body copy, UI prose |
+| `--mono` | DM Mono | Labels, eyebrows, buttons, stat HUD |
+
+The game title "SHIP IT" stays Inter Bold — it's a mark, not prose.
 
 ---
 
@@ -65,7 +79,7 @@ sceneMap{}         → ID-keyed index built from scenes[]
 renderScene(id)    → Renders a scene or ending
 renderEnding()     → Win/lose story endings
 renderGameOver()   → Stat-failure endings
-handleChoice(i)    → Applies effects, shows consequence panel, checks failure
+handleChoice(i)    → Applies effects, shows consequence panel + Continue button, checks failure
 advanceScene(id)   → Called by Continue button; failure check gates here too
 checkFailure()     → Returns stat name if any stat has failed, else null
 updateStats()      → Updates HUD bar widths and values
@@ -96,6 +110,14 @@ getChapterParam()  → Reads ?chapter= or #chapter= or bare #hash from URL
   ]
 }
 ```
+
+### Consequence + Continue button layout
+
+After a choice, `handleChoice()` appends two sibling elements to `#scene-container`:
+1. `.consequence-panel` — consequence text + stat delta pills (no button inside)
+2. `#continue-btn` (`.continue-btn`) — full-width amber button, same style as the intro "Start your shift" CTA. Failure variant uses `.continue-btn.danger` (red background).
+
+The scroll target is `#continue-btn`, not the panel, so the button is always visible on arrival.
 
 ### Ending object shape
 ```js
@@ -138,7 +160,7 @@ getChapterParam()  → Reads ?chapter= or #chapter= or bare #hash from URL
 - Does not editorialize about whether the choice was right
 - Often ends on an ironic detail
 
-**Tone:** Office Space energy. Darkly comic. The jokes come from recognition, not exaggeration. The characters (Derek, Marcus, Richard) are types, not cartoons — they have internal logic.
+**Tone:** Office Space energy. Darkly comic. The jokes come from recognition, not exaggeration. The characters (Derek, Soren, Richard) are types, not cartoons — they have internal logic.
 
 **Writing style:** Plain prose. No jargon. Strong verbs. Short sentences in tense moments. The game text should read like a good short story, not game copy.
 
@@ -146,7 +168,7 @@ getChapterParam()  → Reads ?chapter= or #chapter= or bare #hash from URL
 
 ## Characters
 - **Derek** — Senior PM. Rocket emojis. 11pm Slack. Wants 14 screens by tomorrow. Blameless optimist.
-- **Marcus** — Creative Director. Just listened to a podcast. Thinks colors have shapes. Sends 4-minute voice notes. References thresholds, negative space, Muji, Dieter Rams.
+- **Soren** — Creative Director. Gender-neutral name, intentionally so. Just listened to a podcast. Thinks colors have shapes. Sends 4-minute voice notes. References thresholds, negative space, Muji, Dieter Rams.
 - **Richard** — CEO. Did an MBA. Saw the Balenciaga website last night. Uses "skeuomorphic" in board meetings.
 - **Carol** — The actual user. 47-year-old accounts payable manager. Needs to reconcile 300 freight invoices before end of quarter. Nobody in the room remembers she exists until you make them.
 - **Kyle** — On parental leave. Had the source files.
@@ -157,7 +179,7 @@ getChapterParam()  → Reads ?chapter= or #chapter= or bare #hash from URL
 
 ## URL Debug Parameter
 ```
-http://localhost/ux-adventure/?chapter=ch_6
+http://localhost/ux-adventure/?chapter=ch6
 ```
 Any valid scene ID works. Falls back to `ch0` if unrecognized. Also supports `#chapter=id` and bare `#id` hashes.
 
