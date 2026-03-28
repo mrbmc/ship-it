@@ -41,9 +41,9 @@ ch2               → Chapter 3: The Design System of Broken Promises
 ch3               → Chapter 4: The Creative Director Appears (Marcus)
 ch4               → Chapter 5: The Machine Protests (laptop freeze)
 ch5               → Chapter 6: The Forty-Five Minute Window (Derek wants gamification)
-ch_6          → Chapter 7: Make It Look Like Rolex (CEO brief)
+ch_6          → Chapter 7: Make It Look Like Balenciaga (CEO brief)
 ch_6_follow   → Chapter 8: The Brief That Cannot Be Briefed
-ending_rolex_win  → Win: You Made Carol Visible
+ending_win  → Win: You Made Carol Visible
 ending_ship       → Win: Shipped
 ending_chaos      → Lose: story ending (made bad ch5 choice)
 ```
@@ -147,7 +147,7 @@ getChapterParam()  → Reads ?chapter= or #chapter= or bare #hash from URL
 ## Characters
 - **Derek** — Senior PM. Rocket emojis. 11pm Slack. Wants 14 screens by tomorrow. Blameless optimist.
 - **Marcus** — Creative Director. Just listened to a podcast. Thinks colors have shapes. Sends 4-minute voice notes. References thresholds, negative space, Muji, Dieter Rams.
-- **Richard** — CEO. Did an MBA. Saw the Rolex website last night. Uses "skeuomorphic" in board meetings.
+- **Richard** — CEO. Did an MBA. Saw the Balenciaga website last night. Uses "skeuomorphic" in board meetings.
 - **Carol** — The actual user. 47-year-old accounts payable manager. Needs to reconcile 300 freight invoices before end of quarter. Nobody in the room remembers she exists until you make them.
 - **Kyle** — On parental leave. Had the source files.
 - **Carl** — Left the company. One Figma artboard just says "ASK CARL."
@@ -168,7 +168,7 @@ To re-run the win rate model after making changes to effect weights, run this no
 
 ```js
 // paste scenes object from index.html, then:
-const WIN = new Set(['ending_rolex_win','ending_ship']);
+const WIN = new Set(['ending_win','ending_ship']);
 const clamp = v => Math.max(0, Math.min(100, v));
 const apply = (s, fx) => ({
   sanity:      clamp(s.sanity      + (fx.sanity      || 0)),

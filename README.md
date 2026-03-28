@@ -35,12 +35,12 @@ Jump to any scene via URL:
 http://localhost/ux-adventure/?chapter=ch_6
 ```
 
-Valid scene IDs: `ch0`, `ch1_a`, `ch1_b`, `ch1_c`, `ch2`, `ch3`, `ch4`, `ch5`, `ch_6`, `ch_6_follow`, `ending_rolex_win`, `ending_ship`, `ending_chaos`
+Valid scene IDs: `ch0`, `ch1_a`, `ch1_b`, `ch1_c`, `ch2`, `ch3`, `ch4`, `ch5`, `ch_6`, `ch_6_follow`, `ending_win`, `ending_ship`, `ending_chaos`
 
 ## Characters
 
 - **Derek** — Senior PM. Rocket emojis. Wants 14 screens by tomorrow morning.
-- **Marcus** — Creative Director. Just listened to a podcast. Thinks colors have shapes.
+- **Soren** — Creative Director. Just listened to a podcast. Thinks colors have shapes.
 - **Richard** — CEO. Did an MBA. Saw the Rolex website last night.
 - **Carol** — The actual user. Nobody remembers she exists until you make them.
 - **Kyle** — On parental leave. Had the source files.

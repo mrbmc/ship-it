@@ -10,15 +10,34 @@
   :root {
     --bg:             #0d0c0a;
     --surface:        #111008;
+    --surface-glass:  #11100860;
     --surface-bright: #272218;
     --border:         #2c2820;
     --border-btn:     #3e3828;
     --on-surface:     #ede8dd;
     --muted:          #7e7868;   /* lifted: ~4.7:1 on bg */
     --primary:        #c9a87c;
+    --on-primary:     #111008;
     --secondary:      #8fa392;
     --bad:            #cc5844;   /* lifted: ~4.8:1 on bg */
     --good:           #5d8e6a;
+
+    @media (prefers-color-scheme: light) {
+      --bg:             #FdFcFa;
+      --surface:        #f2f1e8;
+      --surface-glass:  #f2f1e860;
+      --surface-bright: #f1ede4;
+      --border:         #DcD8D080;
+      --border-btn:     #CeC8D800;
+      --on-surface:     #463825;
+      --muted:          #827a64;   /* lifted: ~4.7:1 on bg */
+      --primary:        #c78938;
+      --on-primary:     #f1ede4;
+      --secondary:      #66996e;
+
+      --bad:            #cc5844;   /* lifted: ~4.8:1 on bg */
+      --good:           #5d8e6a;
+    }
 
     --mono:    'DM Mono', monospace;
     --sans:    'Inter', sans-serif;
@@ -63,24 +82,9 @@
     content: '';
     position: fixed;
     inset: 0;
-    background: radial-gradient(ellipse at 50% 30%, transparent 55%, rgba(0,0,0,0.35) 100%);
+    /*background: radial-gradient(ellipse at 50% 30%, transparent 55%, rgba(0,0,0,0.35) 100%);*/
     pointer-events: none;
     z-index: 100;
-  }
-
-  /* Film grain */
-  body::after {
-    content: '';
-    position: fixed;
-    inset: 0;
-    opacity: 0.035;
-    background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.75' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)'/%3E%3C/svg%3E");
-    pointer-events: none;
-    z-index: 2;
-  }
-
-  button, input {
-    font-size: 16px;
   }
 
   #game-wrapper {
@@ -96,6 +100,8 @@
     top: 0;
     z-index: 100;
     background: rgba(13, 12, 10, 0.38);
+    background: var(--surface-glass);
+
     backdrop-filter: blur(24px);
     -webkit-backdrop-filter: blur(24px);
     border-bottom: 1px solid var(--border);
@@ -106,7 +112,7 @@
 
   .game-eyebrow {
     font-family: var(--mono);
-    font-size: 12px;
+    font-size: 0.875rem;
     letter-spacing: 0.16em;
     color: var(--primary);
     text-transform: uppercase;
@@ -136,7 +142,7 @@
 
   .game-subtitle {
     font-family: var(--mono);
-    font-size: 13px;
+    font-size: 0.92rem;
     color: var(--muted);
     margin-bottom: var(--space-s);
     letter-spacing: 0.06em;
@@ -175,7 +181,7 @@
 
   .start-over-link {
     font-family: var(--mono);
-    font-size: 12px;
+    font-size: 0.875rem;
     color: var(--muted);
     letter-spacing: 0.1em;
     cursor: pointer;
@@ -199,7 +205,7 @@
     z-index: 50;
     display: flex;
     align-items: center;
-    background: rgba(13, 12, 10, 0.38);
+    background: var(--surface-glass);
     border: 1px solid var(--border);
     border-radius: var(--space-s);
     backdrop-filter: blur(24px);
@@ -219,7 +225,7 @@
 
   .stat-label {
     font-family: var(--mono);
-    font-size: 11px;
+    font-size: 0.81rem;
     letter-spacing: 0.06em;
     text-transform: uppercase;
     color: var(--muted);
@@ -241,12 +247,12 @@
 
   .stat-fill.sanity      { background: var(--secondary); }
   .stat-fill.credibility { background: var(--primary); }
-  .stat-fill.caffeine    { background: #7ab8e0; }
+  .stat-fill.caffeine    { background: var(--muted); }
   .stat-fill.deadline    { background: var(--bad); }
 
   .stat-value {
     font-family: var(--mono);
-    font-size: 13px;
+    font-size: 0.875rem;
     color: var(--on-surface);
     position: relative;
   }
@@ -257,7 +263,7 @@
     top: -2px;
     right: -22px;
     font-family: var(--mono);
-    font-size: 12px;
+    font-size: 0.875rem;
     font-weight: 500;
     pointer-events: none;
     animation: deltaFloat 1.8s ease forwards;
@@ -294,7 +300,7 @@
 
   .consequence-eyebrow {
     font-family: var(--mono);
-    font-size: 12px;
+    font-size: 0.875rem;
     letter-spacing: 0.14em;
     text-transform: uppercase;
     color: var(--primary);
@@ -304,7 +310,7 @@
   .consequence-text {
     font-size: 15px;
     line-height: 1.7;
-    color: #a8a198;
+    color: var(--on-surface);
     font-weight: 400;
     margin-bottom: 20px;
   }
@@ -318,7 +324,7 @@
 
   .consequence-delta-pill {
     font-family: var(--mono);
-    font-size: 11px;
+    font-size: 0.81rem;
     padding: 3px 10px;
     border-radius: 3px;
     letter-spacing: 0.05em;
@@ -340,25 +346,140 @@
   }
 
   .continue-btn {
-    background: transparent;
-    border: 1px solid var(--border);
+    display: block;
+    width: 100%;
+    padding: 18px 24px;
+    background: var(--primary);
+    color: var(--on-primary);
+    border: none;
+    border-radius: var(--space-xs);
+    font-family: var(--mono);
+    font-size: 0.875rem;
+    font-weight: 500;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    cursor: pointer;
+    transition: opacity 0.15s ease;
+    margin-top: var(--space-m);
+  }
+  .continue-btn:hover { opacity: 0.82; }
+
+  /* ── INTRO SCREEN ───────────────────────────────── */
+  .game-header.hidden { display: none; }
+
+  .intro-screen {
+    padding: var(--space-xl) 0 var(--space-xl);
+    max-width: 680px;
+    margin: 0 auto;
+  }
+
+  .intro-wordmark {
+    font-family: var(--display);
+    font-size: clamp(52px, 12vw, 96px);
+    font-weight: 700;
+    letter-spacing: -0.04em;
+    line-height: 1;
     color: var(--on-surface);
+    margin-bottom: var(--space-s);
+  }
+  .intro-wordmark span { color: var(--primary); }
+
+  .intro-tagline {
+    font-family: var(--mono);
+    font-size: 0.81rem;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    color: var(--text-dim);
+    margin-bottom: var(--space-xl);
+  }
+
+  .intro-divider {
+    border: none;
+    border-top: 1px solid var(--border);
+    margin: var(--space-l) 0;
+  }
+
+  .intro-hook {
+    font-size: 16px;
+    line-height: 1.85;
+    color: var(--text-body);
+  }
+  .intro-hook p { margin: 0 0 0.55em 0; }
+  .intro-hook p:last-child { margin-bottom: 0; }
+
+  .intro-mission {
+    /*font-family: var(--serif);*/
+    /*font-style: italic;*/
+    font-size: clamp(19px, 3vw, 23px);
+    line-height: 1.55;
+    color: var(--on-surface);
+    margin: var(--space-l) 0;
+  }
+
+  .intro-cast { margin: var(--space-l) 0; }
+
+  .intro-cast-label {
+    font-family: var(--mono);
+    font-size: 0.81rem;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    color: var(--text-dim);
+    margin-bottom: var(--space-s);
+  }
+
+  .intro-cast-list { border-top: 1px solid var(--border); }
+
+  .cast-row {
+    display: flex;
+    gap: var(--space-m);
+    padding: 13px 0;
+    border-bottom: 1px solid var(--border);
     font-family: var(--mono);
     font-size: 13px;
-    letter-spacing: 0.10em;
-    text-transform: uppercase;
-    padding: 10px 20px;
-    cursor: pointer;
-    border-radius: var(--space-xs);
-    transition: all 0.18s ease;
-    display: inline-flex;
-    align-items: center;
-    gap: var(--space-xs);
+    line-height: 1.5;
   }
-  .continue-btn:hover {
-    border-color: var(--primary);
+  .cast-name {
     color: var(--primary);
+    font-weight: 500;
+    min-width: 88px;
+    flex-shrink: 0;
   }
+  .cast-desc { color: var(--text-dim); }
+
+  .intro-odds {
+    font-size: 14px;
+    line-height: 1.75;
+    color: var(--text-dim);
+    margin: var(--space-l) 0;
+    padding: var(--space-m) var(--space-m);
+    border: 1px solid var(--border);
+    border-radius: var(--space-s);
+    background: var(--surface);
+  }
+  .intro-odds strong {
+    color: var(--bad);
+    font-weight: 600;
+    font-size: 17px;
+  }
+
+  .intro-start-btn {
+    display: block;
+    width: 100%;
+    padding: 18px 24px;
+    background: var(--primary);
+    border-radius: var(--space-xs);
+    color: var(--on-primary);
+    border: none;
+    font-family: var(--mono);
+    font-size: 13px;
+    font-weight: 500;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    cursor: pointer;
+    transition: opacity 0.15s ease;
+    margin-top: var(--space-l);
+  }
+  .intro-start-btn:hover { opacity: 0.82; }
 
   /* ── GAME OVER ──────────────────────────────────── */
   .gameover-screen {
@@ -371,13 +492,13 @@
 
   .gameover-tag {
     font-family: var(--mono);
-    font-size: 12px;
+    font-size: 0.875rem;
     letter-spacing: 0.16em;
     text-transform: uppercase;
     margin-bottom: var(--space-m);
   }
   .gameover-tag.layoff  { color: var(--bad); }
-  .gameover-tag.burnout { color: var(--secondary); }
+  .gameover-tag.burnout { color: var(--bad); }
 
   .gameover-title {
     font-family: var(--serif);
@@ -389,12 +510,12 @@
     margin-bottom: var(--space-m);
   }
   .gameover-title.layoff  { color: var(--bad); }
-  .gameover-title.burnout { color: var(--secondary); }
+  .gameover-title.burnout { color: var(--bad); }
 
   .gameover-body {
     font-size: 16px;
     line-height: 1.8;
-    color: #9e9890;
+    color: var(--muted);
     max-width: 560px;
     margin-bottom: 40px;
   }
@@ -409,7 +530,7 @@
   .gameover-stat {
     display: inline-block;
     font-family: var(--mono);
-    font-size: 12px;
+    font-size: 0.875rem;
     padding: 3px 10px;
     border-radius: 3px;
     margin-bottom: var(--space-m);
@@ -421,7 +542,7 @@
   }
   .gameover-stat.burnout {
     background: rgba(143, 163, 146, 0.08);
-    color: var(--secondary);
+    color: var(--bad);
     border: 1px solid rgba(143, 163, 146, 0.2);
   }
 
@@ -459,7 +580,7 @@
 
   .scene-tag {
     font-family: var(--mono);
-    font-size: 12px;
+    font-size: 0.875rem;
     letter-spacing: 0.13em;
     color: var(--muted);
     text-transform: uppercase;
@@ -481,7 +602,7 @@
     width: 100%;
     background: var(--surface);
     border: 1px solid var(--border);
-    border-radius: 8px;
+    border-radius: var(--space-s);
     padding: var(--space-l) 0;
     margin-bottom: var(--space-m);
     display: flex;
@@ -520,7 +641,7 @@
   /* ── CHOICES ────────────────────────────────────── */
   .choices-label {
     font-family: var(--mono);
-    font-size: 12px;
+    font-size: 0.875rem;
     letter-spacing: 0.14em;
     text-transform: uppercase;
     color: var(--muted);
@@ -536,7 +657,7 @@
   .choice-btn {
     background: var(--surface-bright);
     border: 1px solid var(--border-btn);
-    box-shadow: inset 0 1px 0 rgba(255,255,255,0.04), 0 1px 4px rgba(0,0,0,0.4);
+    box-shadow: inset 0 1px 0 rgba(255,255,255,0.04), 0 2px 8px rgba(0,0,0,0.13);
     border-radius: var(--space-xs);
     padding: var(--space-s) var(--space-m);
     cursor: pointer;
@@ -548,14 +669,14 @@
   .choice-btn::before { display: none; }
 
   .choice-btn:hover {
-    border-color: rgba(201, 168, 124, 0.55);
-    background: #312b1f;
-    box-shadow: inset 0 1px 0 rgba(255,255,255,0.06), 0 2px 8px rgba(0,0,0,0.5);
+    border-color: var(--primary);
+    background: var(--surface-bright);
+    box-shadow: inset 0 1px 0 rgba(255,255,255,0.06), 0 4px 12px rgba(0,0,0,0.21);
   }
 
   .choice-letter {
     font-family: var(--mono);
-    font-size: 12px;
+    font-size: 0.875rem;
     color: var(--primary);
     letter-spacing: 0.10em;
     margin-bottom: 5px;
@@ -581,7 +702,7 @@
 
   .outcome-tag {
     font-family: var(--mono);
-    font-size: 12px;
+    font-size: 0.875rem;
     letter-spacing: 0.14em;
     text-transform: uppercase;
     margin-bottom: 12px;
@@ -643,7 +764,7 @@
   }
   .scene-divider span {
     font-family: var(--mono);
-    font-size: 11px;
+    font-size: 0.81rem;
     color: var(--muted);
     letter-spacing: 0.2em;
     text-transform: uppercase;
@@ -690,7 +811,7 @@
 
   .progress-label {
     font-family: var(--mono);
-    font-size: 12px;
+    font-size: 0.875rem;
     color: var(--muted);
     letter-spacing: 0.07em;
     margin-left: 8px;
@@ -773,15 +894,15 @@ const scenes = [
     tag: 'Your employment record',
     title: 'The Brief Life Of A Mid-Career UX Designer',
     emoji: '🪪',
-    text: `You have five years of experience. Enough to know that "let's align on requirements" means the requirements don't exist yet. Enough to have opinions about typefaces. Not quite enough to have stopped doing this.
+    text: `Your objective: <strong>ship something real</strong>. Not a deck. Not a prototype that will never be opened again after the demo. Something a real person can use to do their actual job.
+
+You have five years of experience. Enough to know that "let's align on requirements" means the requirements don't exist yet. Enough to have opinions about typefaces. Not quite enough to have stopped doing this.
 
 You work at a mid-sized SaaS company. The kind with a culture deck and a kitchen stocked with four types of La Croix. Your title is Senior Product Designer. Your actual job is whatever the product team needs by tomorrow morning.
 
 You've shipped three products. Survived two reorgs. Sat through a full-day design sprint where the output was a list of words on a whiteboard that someone photographed and never looked at again.
 
-Your skills: <strong>Figma</strong>, <strong>stakeholder management</strong>, knowing when to fight and when to let Marcus have the voice note. You have a portfolio site. It has not been updated since 2022.
-
-Today's objective: <strong>ship something real</strong>. Not a deck. Not a prototype that will never be opened again after the demo. Something a real person can use to do their actual job.`,
+Your skills: <strong>Figma</strong>, <strong>stakeholder management</strong>, knowing when to fight and when to let Soren have the voice note. You have a portfolio site. It has not been updated since 2022.`,
     choices: [
       {
         letter: 'A',
@@ -894,13 +1015,13 @@ This is your source file.`,
 
 <em>"Totally get it but leadership really needs to see the full picture. It's just mockups!! Can't you use AI or something? I saw a tweet that Figma has AI now."</em>
 
-Your Creative Director, <strong>Marcus</strong>, is now in the thread. He's added a reaction: 🤔
+Your Creative Director, <strong>Soren</strong>, is now in the thread. They've added a reaction: 🤔
 
-Marcus sends a voice note. You can see it's 4 minutes and 12 seconds long. You do not press play.`,
+Soren sends a voice note. You can see it's 4 minutes and 12 seconds long. You do not press play.`,
     choices: [
       {
         letter: 'A',
-        text: 'Play the voice note. You need to know what Marcus thinks.',
+        text: 'Play the voice note. You need to know what Soren thinks.',
         consequence: 'It\'s mostly about the "energy" of the brand.',
         type: 'bad',
         effects: { sanity: -15, credibility: 0, caffeine: 0, deadline: +5 },
@@ -909,15 +1030,15 @@ Marcus sends a voice note. You can see it's 4 minutes and 12 seconds long. You d
       {
         letter: 'B',
         text: 'Ignore the voice note. Commit to the 4-screen version. Ship clarity.',
-        consequence: 'Credibility move. Marcus will notice.',
+        consequence: 'Credibility move. Soren will notice.',
         type: 'good',
         effects: { sanity: +5, credibility: +10, caffeine: -5, deadline: -15 },
-        flags: { ignored_marcus: true },
+        flags: { ignored_soren: true },
         next: 'ch2'
       },
       {
         letter: 'C',
-        text: 'Reply to the thread: "Happy to align with Marcus directly — can we do 15 min?"',
+        text: 'Reply to the thread: "Happy to align with Soren directly — can we do 15 min?"',
         consequence: 'Calendar invite arrives for 3pm. One hour before your work day ends.',
         type: 'neutral',
         effects: { sanity: -5, credibility: +5, caffeine: -10, deadline: -10 },
@@ -1010,25 +1131,25 @@ The color library has 47 shades of the primary blue. There's a "Dark Mode" page 
     ]
   },
 
-  // CHAPTER 3 — MARCUS
+  // CHAPTER 3 — SOREN
   {
     id: 'ch3',
     tag: 'Monday, 2:30 PM',
     title: 'The Creative Director Appears',
     emoji: '🎭',
-    text: `Marcus arrives in your DMs. He has listened to a podcast.
+    text: `Soren arrives in your DMs. They have listened to a podcast.
 
 <em>"I've been thinking about the brand story. What if the onboarding felt less like a product and more like a… <strong>threshold</strong>? Like the user is crossing into a new version of themselves. I'm seeing: slow dissolves, a lot of negative space, something that feels like Muji meets Dieter Rams but make it warm. Human. Maybe a little unexpected."</em>
 
 You look at your laptop. Your battery is at 14%. The charger is under your desk, wrapped around something. You are building 14 screens. Or 5. Or 4. It is 2:30 PM.
 
-Marcus adds: <em>"Also I wouldn't use that shade of blue you had last time. It felt… rectangular."</em>
+Soren adds: <em>"Also I wouldn't use that shade of blue you had last time. It felt… rectangular."</em>
 
 <strong>Rectangular.</strong>`,
     choices: [
       {
         letter: 'A',
-        text: '"Love this direction, Marcus. I\'ll weave that feeling in." [continue working on what you were building]',
+        text: '"Love this direction, Soren. I\'ll weave that feeling in." [continue working on what you were building]',
         consequence: 'Professional. Dishonest. Effective.',
         type: 'neutral',
         effects: { sanity: -10, credibility: +5, caffeine: -10, deadline: -10 },
@@ -1044,11 +1165,11 @@ Marcus adds: <em>"Also I wouldn't use that shade of blue you had last time. It f
       },
       {
         letter: 'C',
-        text: '"Marcus, I\'m working against a hard deadline. Can we circle back to creative direction after the stakeholder review?"',
+        text: '"Soren, I\'m working against a hard deadline. Can we circle back to creative direction after the stakeholder review?"',
         consequence: 'Silence. Then a 🙏 emoji. Unclear if approving or passive-aggressive.',
         type: 'good',
         effects: { sanity: -5, credibility: -10, caffeine: 0, deadline: -15 },
-        flags: { pushed_back_marcus: true },
+        flags: { pushed_back_soren: true },
         next: 'ch4'
       }
     ]
@@ -1105,7 +1226,7 @@ Figma autosaves every 30 seconds. You last clicked something approximately 28 se
     emoji: '⏱️',
     text: `It is 1:15 PM. The presentation is at 2:00 PM.
 
-You have <strong>something</strong>. It's not 14 screens. It's not the threshold feeling Marcus mentioned. It doesn't use the new brand colors because you couldn't find the hex codes.
+You have <strong>something</strong>. It's not 14 screens. It's not the threshold feeling Soren mentioned. It doesn't use the new brand colors because you couldn't find the hex codes.
 
 But it's clear. It has a point of view. The flows make sense. You annotated the key decision points. You wrote a one-paragraph rationale at the top.
 
@@ -1243,7 +1364,7 @@ You have a choice about what kind of designer you are today. The laptop fan star
     tag: 'Tuesday, 2:47 PM',
     title: 'Shipped.',
     emoji: '🚢',
-    text: `The presentation ends. There are nods. A VP says "this is solid direction." Marcus says the last screen has good "energy." Derek asks one question about gamification. You say "Phase 2." He nods.
+    text: `The presentation ends. There are nods. A VP says "this is solid direction." Soren says the last screen has good "energy." Derek asks one question about gamification. You say "Phase 2." He nods.
 
 Nothing is approved. Nothing is rejected. A follow-up meeting is scheduled.
 
@@ -1266,7 +1387,7 @@ You close your laptop. The pink gradient has spread slightly further to the left
 
 The VP opens with: "I love the direction of the first 11 screens."
 
-You never get to screen 14. The call ends early because Derek has another call. Marcus messages you afterward: <em>"Screen 4 had a very rectangular energy."</em>
+You never get to screen 14. The call ends early because Derek has another call. Soren messages you afterward: <em>"Screen 4 had a very rectangular energy."</em>
 
 The work you did at 1:15 AM — the clear, honest, thoughtful work — that's what they saw. That's what mattered.
 
@@ -1347,11 +1468,63 @@ scenes.forEach(s => { sceneMap[s.id] = s; });
 let currentScene = null;
 
 // ─── RENDER ──────────────────────────────────────────────────────────────────
+function renderIntro() {
+  _header.classList.add('hidden');
+  const container = document.getElementById('scene-container');
+  container.innerHTML = `
+    <div class="intro-screen">
+      <div class="intro-wordmark">SHIP<span>IT</span></div>
+      <div class="intro-tagline">A choose-your-own-adventure for designers who know better</div>
+
+      <hr class="intro-divider">
+
+      <div class="intro-hook">
+        <p>It is 11:47 PM on a Sunday.</p>
+        <p>Derek just sent a Slack. He needs 14 screens by 9 AM.</p>
+        <p>Kyle has the source files. Kyle is on parental leave.</p>
+        <p>Your CEO saw the Balenciaga website last night and has thoughts.</p>
+        <p>Your Creative Director just finished his third podcast of the day.</p>
+        <p>The design system is held together by a Figma file nobody can open and good intentions that have never been tested in production.</p>
+      </div>
+
+      <div class="intro-mission">Your mission: ship something real — for Carol, 47, accounts payable, 300 freight invoices to reconcile before end of quarter. The only person in this building who actually needs the software to work.</div>
+
+      <hr class="intro-divider">
+
+      <div class="intro-cast">
+        <div class="intro-cast-label">Standing in your way</div>
+        <div class="intro-cast-list">
+          <div class="cast-row"><span class="cast-name">DEREK</span><span class="cast-desc">Senior PM. Rocket emojis. 11pm Slacks. Blameless optimism. No context.</span></div>
+          <div class="cast-row"><span class="cast-name">SOREN</span><span class="cast-desc">Creative Director. Three podcasts deep. Wants it to feel more Muji.</span></div>
+          <div class="cast-row"><span class="cast-name">RICHARD</span><span class="cast-desc">CEO. Did an MBA. Saw the Balenciaga website last night.</span></div>
+        </div>
+      </div>
+
+      <div class="intro-odds"><strong>36%</strong> of designers ship something real. The rest end up at a pottery studio front desk for $14.50 an hour. Gerald the cat is nice, though.</div>
+
+      <button class="intro-start-btn" onclick="startGame()">Begin your shift →</button>
+    </div>
+  `;
+  container.classList.remove('scene-container');
+  void container.offsetWidth;
+  container.classList.add('scene-container');
+  window.scrollTo({ top: 0, behavior: 'smooth' });
+}
+
+function startGame() {
+  _header.classList.remove('hidden');
+  renderScene('ch0');
+}
+
 function renderScene(sceneId) {
   const scene = sceneMap[sceneId];
   if (!scene) return;
   currentScene = scene;
-  _header.classList.toggle('scrolled', sceneId !== 'intro');
+
+  if (sceneId === 'intro') { renderIntro(); return; }
+
+  _header.classList.remove('hidden');
+  _header.classList.add('scrolled');
 
   updateProgress();
 
@@ -1487,22 +1660,23 @@ function handleChoice(index) {
   panel.className = 'consequence-panel';
   panel.id = 'consequence-panel';
 
-  // If failed: show consequence then game over button. If not: show Continue.
-  const actionBtn = failure
-    ? `<button class="continue-btn" onclick="renderGameOver('${failure}')" style="border-color:var(--bad);color:var(--bad)">See what happens →</button>`
-    : `<button class="continue-btn" onclick="advanceScene('${choice.next}')">Continue →</button>`;
-
   panel.innerHTML = `
     <div class="consequence-eyebrow">↳ What happens</div>
     <div class="consequence-text">${choice.consequence}</div>
     <div class="consequence-deltas">${deltaPills}</div>
-    ${actionBtn}
   `;
   container.appendChild(panel);
 
+  const btn = document.createElement('button');
+  btn.id = 'continue-btn';
+  btn.className = 'continue-btn' + (failure ? ' danger' : '');
+  btn.textContent = failure ? 'See what happens →' : 'Continue →';
+  btn.onclick = failure ? () => renderGameOver(failure) : () => advanceScene(choice.next);
+  container.appendChild(btn);
+
   // Scroll consequence panel into view, clearing the fixed status bar
   setTimeout(() => {
-    const panel = document.getElementById('consequence-panel');
+    const panel = document.getElementById('continue-btn');
     const bar = document.querySelector('.status-bar');
     const gap = panel.getBoundingClientRect().bottom - (window.innerHeight - bar.offsetHeight) + 16;
     if (gap > 0) window.scrollBy({ top: gap, behavior: 'smooth' });
@@ -1612,7 +1786,6 @@ You do not miss the design system. You do not miss Derek. You miss, occasionally
       <div class="gameover-stat ${type}">${data.pill}</div>
       <hr />
       <div class="gameover-tag ${type}">${data.tag}</div>
-      <h3 class="gameover-heading ${type}">${data.title.replace(/\n/g, '<br>')}</h3>
       <div class="gameover-body">${formatText(data.body)}</div>
       <button class="gameover-btn" onclick="resetGame()">Try again ↺</button>
     </div>
