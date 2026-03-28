@@ -1,0 +1,1816 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>SHIP IT — A UX Designer's Survival Saga</title>
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=DM+Mono:ital,wght@0,300;0,400;0,500;1,300&family=Inter:wght@400;700&display=swap');
+
+  :root {
+    --hue: 190;
+    --bg: hsl(var(--hue), 13%, 5%, 1.0);
+    --surface: hsl(var(--hue), 13%, 8%,0.66);
+    --surface-bright: hsl(var(--hue), 8%, 13%, 0.66);
+    --border: hsl( var(--hue), 15%, 21%);
+    --on-surface: hsla( var(--hue), 34%, 96%, 1);
+    --muted: hsl(var(--hue), 13%, 62%);
+    --primary: hsl(var(--hue), 63%, 54%);
+    --secondary: hsl(calc(var(--hue) + 30), 34%, 66%);
+    --bad: hsla(0, 63%, 54%, 1);
+    --good: #4e9e70;
+
+    --mono: 'DM Mono', monospace;
+    --sans: 'Inter', sans-serif;
+    --display: 'Inter', sans-serif;
+    --on-surface-base: 15px;
+    --on-surface-scale: 1.33;
+
+    --space-xs: 8px;
+    --space-s: calc(var(--space-xs) * 2);
+    --space-m: calc(var(--space-xs) * 4);
+    --space-l: calc(var(--space-xs) * 6);
+    --space-xl: calc(var(--space-xs) * 8);
+    --space-xxl: calc(var(--space-xs) * 12);
+
+    font-size: var(--on-surface-base);
+
+    @media (orientation: landscape) {
+      --space-xs: 12px;
+      --on-surface-base: 18px;
+      --on-surface-scale: 1.4;
+    }
+  }
+
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+
+  h1,h2,h3 {
+    font-family: var(--display);
+    font-weight: 400;
+    letter-spacing: -0.02em;
+  }
+  h1 {
+    font-size: calc(var(--on-surface-base) * var(--on-surface-scale) * var(--on-surface-scale) * var(--on-surface-scale) * var(--on-surface-scale) * var(--on-surface-scale));
+  }
+  h2 {
+    font-size: calc(var(--on-surface-base) * var(--on-surface-scale) * var(--on-surface-scale) * var(--on-surface-scale));
+  }
+  h3 {
+    font-size: calc(var(--on-surface-base) * var(--on-surface-scale) * var(--on-surface-scale));
+  }
+
+  body {
+    background-color: var(--bg);
+    background-image:
+      radial-gradient(ellipse at 5% 5%, rgba(0, 0, 0, 1.0) 0%, transparent 38%),
+      radial-gradient(ellipse at 95% 5%, rgba(0, 0, 0, 1.0) 0%, transparent 38%),
+      radial-gradient(ellipse at 95% 95%, rgba(0, 0, 0, 1.0) 0%, transparent 38%),
+      radial-gradient(ellipse at 5% 95%, rgba(0, 0, 0, 1.0) 0%, transparent 38%),
+      radial-gradient(ellipse at 18% 18%, rgba(164, 82, 62, 0.614) 0%, transparent 55%),
+      radial-gradient(ellipse at 82% 78%, rgba(148, 72, 36, 0.613) 0%, transparent 52%),
+      radial-gradient(ellipse at 78% 12%, rgba(88, 52, 92,  0.611) 0%, transparent 77%),
+      radial-gradient(ellipse at 22% 82%, rgba(42, 48, 122, 0.610) 0%, transparent 48%);
+    background-attachment: fixed;
+    color: var(--on-surface);
+    font-family: var(--sans);
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    padding: 0;
+    overflow-x: hidden;
+    overflow-anchor: none;
+  }
+
+  /* VIGNETTE */
+  body::before {
+    content: '';
+    position: fixed;
+    inset: 0;
+    background: radial-gradient(ellipse at 50% 40%, transparent 45%, rgba(0,0,0,0.55) 100%);
+    pointer-events: none;
+    z-index: 100;
+  }
+
+  /* NOISE TEXTURE */
+  body::after {
+    content: '';
+    position: fixed;
+    inset: 0;
+    opacity: 0.07;
+    background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.75' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)'/%3E%3C/svg%3E");
+    pointer-events: none;
+    z-index: 2;
+  }
+
+  button,input {
+    font-size: var(--on-surface-base);
+  }
+
+  #game-wrapper {
+    width: 100%;
+    max-width: 760px;
+    padding: 0 var(--space-s) var(--space-xl);
+    z-index: 50;
+  }
+
+  /* HEADER */
+  .game-header {
+    position: sticky;
+    top: 0;
+    z-index: 100;
+    background: rgba(12, 9, 7, 0.55);
+    backdrop-filter: blur(16px);
+    -webkit-backdrop-filter: blur(16px);
+    border-bottom: 1px solid var(--border);
+    padding: var(--space-l) var(--space-s) var(--space-m);
+    margin: 0 calc(var(--space-s)*-1) var(--space-l);
+    transition: padding 0.3s ease;
+  }
+
+  .game-eyebrow {
+    font-family: var(--mono);
+    /*font-size: 10px;*/
+    letter-spacing: 0.2em;
+    color: var(--primary);
+    text-transform: uppercase;
+    margin-bottom: var(--space-s);
+    overflow: hidden;
+    max-height: 2.4em;
+    opacity: 1;
+    transition: max-height 0.3s ease, opacity 0.2s ease, margin 0.3s ease;
+  }
+
+  .game-title {
+    font-family: var(--display);
+    font-weight: 700;
+    /*font-size: clamp(52px, 10vw, 96px);*/
+    line-height: 0.92;
+    letter-spacing: -0.03em;
+    color: var(--on-surface);
+    transition: font-size 0.3s ease;
+    margin-bottom: var(--space-s);
+  }
+  .game-title a {
+    color: var(--on-surface);
+    text-decoration: none;
+  }
+
+  .game-title span {
+    color: var(--primary);
+  }
+
+  .game-subtitle {
+    font-family: var(--mono);
+    /*font-size: 12px;*/
+    color: var(--muted);
+    margin-bottom: var(--space-s);
+    letter-spacing: 0.05em;
+    overflow: hidden;
+    max-height: 2.4em;
+    opacity: 1;
+    transition: max-height 0.3s ease, opacity 0.2s ease, margin 0.3s ease;
+  }
+
+  .game-header.scrolled {
+    padding: var(--space-s) 0;
+    padding: var(--space-s) var(--space-s) var(--space-s);
+  }
+
+  .game-header.scrolled .game-eyebrow,
+  .game-header.scrolled .game-subtitle {
+    max-height: 0;
+    opacity: 0;
+    margin-top: 0;
+    margin-bottom: 0;
+    padding: 0;
+  }
+
+  .game-header.scrolled .progress-track {
+    margin-bottom: 0;
+  }
+
+  .game-header.scrolled .game-title {
+    font-size: 2rem;
+  }
+
+  #scroll-sentinel {
+    height: 0;
+    pointer-events: none;
+  }
+
+  .start-over-link {
+    font-family: var(--mono);
+    /*font-size: 10px;*/
+    color: var(--muted);
+    letter-spacing: 0.1em;
+    cursor: pointer;
+    background: none;
+    border: none;
+    padding: 0;
+    text-decoration: underline;
+    text-underline-offset: 3px;
+    display: none;
+    max-height: 2.4em;
+  }
+  .start-over-link:hover { color: var(--on-surface); }
+
+  /* STATUS BAR — fixed HUD at bottom */
+  .status-bar {
+    position: fixed;
+    bottom: 1em;
+    left: var(--space-s);
+    width: calc(100vw - var(--space-s) - var(--space-s));
+    z-index: 50;
+    display: flex;
+    align-items: center;
+    gap: 0;
+    padding: 0;
+    background: rgba(12, 9, 7, 0.92);
+    /*border-top: 1px solid var(--border);*/
+    border: 1px solid var(--border);
+    border-radius: var(--space-m);
+    backdrop-filter: blur(16px);
+    -webkit-backdrop-filter: blur(16px);
+  }
+
+  .stat {
+    display: flex;
+    flex: 1;
+    flex-direction: column;
+    align-items: center;
+    gap: 5px;
+    padding: var(--space-xs) 0 var(--space-s);
+    border-right: 1px solid var(--border);
+  }
+
+  .stat:last-child { border-right: none; }
+
+  .stat-label {
+    font-family: var(--mono);
+    font-size: 0.75em;
+    letter-spacing: 0.05em;
+    text-transform: uppercase;
+    color: var(--muted);
+  }
+
+  .stat-bar {
+    height: 3px;
+    background: var(--border);
+    border-radius: 2px;
+    overflow: hidden;
+    width: 100%;
+    max-width: 80px;
+  }
+
+  .stat-fill {
+    height: 100%;
+    border-radius: 2px;
+    transition: width 0.7s cubic-bezier(0.4, 0, 0.2, 1);
+  }
+
+  .stat-fill.sanity { background: var(--secondary); }
+  .stat-fill.credibility { background: var(--primary); }
+  .stat-fill.caffeine { background: #8bc4e8; }
+  .stat-fill.deadline { background: var(--bad); }
+
+  .stat-value {
+    font-family: var(--mono);
+    /*font-size: 11px;*/
+    color: var(--on-surface);
+    position: relative;
+  }
+
+  /* STAT DELTA — the +/- number that floats up after a choice */
+  .stat-delta {
+    position: absolute;
+    top: -2px;
+    right: -22px;
+    font-family: var(--mono);
+    /*font-size: 10px;*/
+    font-weight: 500;
+    pointer-events: none;
+    animation: deltaFloat 1.8s ease forwards;
+    white-space: nowrap;
+  }
+
+  .stat-delta.positive { color: var(--good); }
+  .stat-delta.negative { color: var(--bad); }
+
+  @keyframes deltaFloat {
+    0%   { opacity: 0; transform: translateY(4px); }
+    15%  { opacity: 1; transform: translateY(0); }
+    70%  { opacity: 1; transform: translateY(-10px); }
+    100% { opacity: 0; transform: translateY(-18px); }
+  }
+
+  /* HUD spacer — keeps content above the fixed bar */
+  .hud-spacer { height: 72px; }
+
+  hr {
+    border: none;
+    height: 1px;
+    background: var(--border);
+    margin: 24px 0 48px;
+  }
+
+  /* CONSEQUENCE INTERSTITIAL */
+  .consequence-panel {
+    margin-top: var(--space-m);
+    padding: var(--space-m);
+    background: var(--surface);
+    /*border: 1px solid var(--border);*/
+    /*border-left: 3px solid var(--primary);*/
+    border-radius: var(--space-m);
+    animation: fadeIn 0.35s ease;
+  }
+
+  .consequence-eyebrow {
+    font-family: var(--mono);
+    /*font-size: 9px;*/
+    letter-spacing: 0.2em;
+    text-transform: uppercase;
+    color: var(--primary);
+    margin-bottom: 10px;
+  }
+
+  .consequence-text {
+    /*font-size: 14px;*/
+    line-height: 1.65;
+    color: #c8c4bc;
+    font-weight: 300;
+    margin-bottom: 20px;
+  }
+
+  .consequence-deltas {
+    display: flex;
+    flex-wrap: wrap;
+    gap: var(--space-xs);
+    margin-bottom: var(--space-m);
+  }
+
+  .consequence-delta-pill {
+    font-family: var(--mono);
+    /*font-size: 10px;*/
+    padding: 4px 10px;
+    border-radius: 2px;
+    letter-spacing: 0.05em;
+  }
+
+  .consequence-delta-pill.pos {
+    background: rgba(74, 158, 107, 0.15);
+    color: var(--good);
+    border: 1px solid rgba(74, 158, 107, 0.3);
+  }
+
+  .consequence-delta-pill.neg {
+    background: rgba(192, 57, 43, 0.15);
+    color: var(--bad);
+    border: 1px solid rgba(192, 57, 43, 0.3);
+  }
+
+  .consequence-delta-pill.zero {
+    background: rgba(108, 102, 96, 0.15);
+    color: var(--muted);
+    border: 1px solid var(--border);
+  }
+
+  .continue-btn {
+    background: transparent;
+    border: 1px solid var(--on-surface);
+    color: var(--on-surface);
+    font-family: var(--mono);
+    /*font-size: 11px;*/
+    letter-spacing: 0.15em;
+    text-transform: uppercase;
+    padding: 11px 20px;
+    cursor: pointer;
+    border-radius: 2px;
+    transition: all 0.18s ease;
+    display: inline-flex;
+    align-items: center;
+    gap: var(--space-xs);
+  }
+
+  .continue-btn:hover {
+    border-color: var(--primary);
+    color: var(--primary);
+  }
+
+  /* GAME OVER SCREEN */
+  .gameover-screen {
+    min-height: 60vh;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    animation: fadeIn 0.6s ease;
+  }
+
+  .gameover-tag {
+    font-family: var(--mono);
+    /*font-size: 10px;*/
+    letter-spacing: 0.25em;
+    text-transform: uppercase;
+    margin-bottom: 20px;
+  }
+
+  .gameover-tag.layoff { color: var(--bad); }
+  .gameover-tag.burnout { color: var(--secondary); }
+
+  .gameover-title {
+    font-family: var(--display);
+    /*font-weight: 700;*/
+    /*font-size: clamp(48px, 10vw, 88px);*/
+    line-height: 0.95;
+    letter-spacing: -0.03em;
+    margin-bottom: var(--space-m);
+  }
+
+  .gameover-title.layoff { color: var(--bad); }
+  .gameover-title.burnout { color: var(--secondary); }
+
+  .gameover-body {
+    /*font-size: 15px;*/
+    line-height: 1.8;
+    color: #c8c4bc;
+    /*font-weight: 300;*/
+    max-width: 560px;
+    margin-bottom: 40px;
+  }
+
+  .gameover-body strong { color: var(--on-surface); }
+  .gameover-body em {
+    font-style: normal;
+    font-family: var(--mono);
+    /*font-size: 13px;*/
+    color: var(--muted);
+  }
+
+  .gameover-stat {
+    display: inline-block;
+    font-family: var(--mono);
+    /*font-size: 11px;*/
+    padding: 4px 10px;
+    border-radius: 2px;
+    margin-bottom: 28px;
+  }
+
+  .gameover-stat.layoff {
+    background: rgba(192,57,43,0.15);
+    color: var(--bad);
+    border: 1px solid rgba(192,57,43,0.3);
+  }
+
+  .gameover-stat.burnout {
+    background: rgba(201,154,82,0.12);
+    color: var(--secondary);
+    border: 1px solid rgba(201,154,82,0.28);
+  }
+
+  .gameover-btn {
+    background: transparent;
+    border: 1px solid var(--border);
+    color: var(--on-surface);
+    font-family: var(--mono);
+    /*font-size: 11px;*/
+    letter-spacing: 0.15em;
+    text-transform: uppercase;
+    padding: 13px 24px;
+    cursor: pointer;
+    border-radius: 2px;
+    transition: all 0.18s ease;
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    align-self: flex-start;
+  }
+
+  .gameover-btn:hover {
+    border-color: var(--on-surface);
+    background: var(--surface);
+  }
+
+  /* SCENE */
+  .scene-container {
+    animation: fadeIn 0.4s ease;
+  }
+
+  @keyframes fadeIn {
+    from { opacity: 0; transform: translateY(8px); }
+    to { opacity: 1; transform: translateY(0); }
+  }
+
+  .scene-tag {
+    font-family: var(--mono);
+    /*font-size: 10px;*/
+    letter-spacing: 0.2em;
+    color: var(--primary);
+    text-transform: uppercase;
+    margin-bottom: var(--space-s);
+  }
+
+  .scene-title {
+    font-family: var(--display);
+    /*font-weight: 700;*/
+    /*font-size: clamp(28px, 5vw, 44px);*/
+    line-height: 1.0;
+    color: var(--on-surface);
+    margin-bottom: 24px;
+    letter-spacing: -0.02em;
+  }
+
+  .scene-image {
+    width: 100%;
+    background: var(--surface);
+    /*border: 1px solid var(--border);*/
+    box-shadow: 0 8px 16px var(--bg);
+    border-radius: var(--space-m);
+    padding: var(--space-l) 0;
+    margin-bottom: var(--space-m);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 96px;
+    position: relative;
+    overflow: hidden;
+  }
+
+  .scene-image::after {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background: linear-gradient(to bottom, transparent 55%, #0c0907 100%);
+  }
+
+  .scene-text {
+    /*font-size: 15px;*/
+    line-height: 1.75;
+    color: var(--on-surface);
+    margin-bottom: var(--space-m);
+    font-weight: 300;
+  }
+
+  .scene-text p, .gameover-body p {
+    margin: 0 0 1em 0;
+  }
+
+  .scene-text p:last-child, .gameover-body p:last-child {
+    margin-bottom: 0;
+  }
+
+  .scene-text strong {
+    color: var(--on-surface);
+    font-weight: 500;
+  }
+
+  .scene-text em {
+    color: var(--secondary);
+    font-style: normal;
+    font-family: var(--mono);
+    /*font-size: 13px;*/
+  }
+
+  /* CHOICES */
+  .choices-label {
+    font-family: var(--mono);
+    /*font-size: 10px;*/
+    letter-spacing: 0.2em;
+    text-transform: uppercase;
+    color: var(--muted);
+    margin-bottom: var(--space-s);
+  }
+
+  .choices {
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-s);
+  }
+
+  .choice-btn {
+    background: var(--surface-bright);
+    /*background-image: linear-gradient(to bottom, hsla(32,8%,92%,0.32) 0%, hsla(32,8%,5%,0.0) 10%);*/
+    backdrop-filter: blur(16px);
+    /*box-shadow: inset 0 2px 8px hsla(16, 13%, 34%,0.4);*/
+    border: 1px solid var(--border);
+    border-radius: var(--space-m);
+    padding: var(--space-m) var(--space-m);
+    cursor: pointer;
+    text-align: left;
+    transition: all 0.18s ease;
+    position: relative;
+    overflow: hidden;
+  }
+
+  .choice-btn::before {
+    content: '';
+    position: absolute;
+    left: 0; top: 0; bottom: 0;
+    width: 3px;
+    background: var(--primary);
+    transform: scaleY(0);
+    transition: transform 0.18s ease;
+    transform-origin: center;
+  }
+
+  .choice-btn:hover {
+    border-color: var(--primary);
+    background: var(--surface-bright);
+    transform: translateX(3px);
+  }
+
+  .choice-btn:hover::before {
+    transform: scaleY(1);
+  }
+
+  .choice-letter {
+    font-family: var(--mono);
+    /*font-size: 10px;*/
+    color: var(--primary);
+    letter-spacing: 0.1em;
+    margin-bottom: 5px;
+    display: block;
+  }
+
+  .choice-text {
+    /*font-size: 14px;*/
+    color: var(--on-surface);
+    line-height: 1.5;
+  }
+
+  /* OUTCOME SCREEN */
+  .outcome {
+    padding: var(--space-m);
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: var(--space-s);
+    margin-top: var(--space-m);
+    animation: fadeIn 0.5s ease;
+  }
+
+  .outcome-tag {
+    font-family: var(--mono);
+    /*font-size: 10px;*/
+    letter-spacing: 0.2em;
+    text-transform: uppercase;
+    margin-bottom: 12px;
+  }
+
+  .outcome-tag.win { color: var(--good); }
+  .outcome-tag.lose { color: var(--bad); }
+  .outcome-tag.continue { color: var(--secondary); }
+
+  .outcome-title {
+    font-family: var(--display);
+    font-weight: 700;
+    /*font-size: 40px;*/
+    margin-bottom: var(--space-s);
+    letter-spacing: -0.02em;
+  }
+
+  .outcome-text {
+    /*font-size: 14px;*/
+    line-height: 1.7;
+    color: #c8c4bc;
+    font-weight: 300;
+  }
+
+  .outcome-btn {
+    margin-top: 24px;
+    background: var(--primary);
+    border: none;
+    color: white;
+    font-family: var(--mono);
+    /*font-size: 11px;*/
+    letter-spacing: 0.15em;
+    text-transform: uppercase;
+    padding: 12px 24px;
+    cursor: pointer;
+    border-radius: var(--space-m);
+    transition: all 0.18s ease;
+  }
+
+  .outcome-btn:hover {
+    background: #e07848;
+    transform: translateY(-1px);
+  }
+
+  /* DIVIDER */
+  .scene-divider {
+    display: flex;
+    align-items: center;
+    gap: var(--space-s);
+    margin: var(--space-m) 0;
+  }
+
+  .scene-divider::before,
+  .scene-divider::after {
+    content: '';
+    flex: 1;
+    height: 1px;
+    background: var(--border);
+  }
+
+  .scene-divider span {
+    font-family: var(--mono);
+    /*font-size: 9px;*/
+    color: var(--muted);
+    letter-spacing: 0.2em;
+    text-transform: uppercase;
+  }
+
+  /* BLINKING CURSOR */
+  .cursor {
+    display: inline-block;
+    width: 8px;
+    height: 14px;
+    background: var(--primary);
+    animation: blink 1s step-end infinite;
+    vertical-align: middle;
+    margin-left: 2px;
+  }
+
+  @keyframes blink {
+    50% { opacity: 0; }
+  }
+
+  /* PROGRESS */
+  .progress-track {
+    display: flex;
+    gap: 6px;
+    margin-bottom: var(--space-s);
+    align-items: center;
+  }
+
+  .progress-dot {
+    width: 6px;
+    height: 6px;
+    border-radius: 50%;
+    background: var(--border);
+    transition: background 0.3s ease;
+  }
+
+  .progress-dot.done { background: var(--muted); }
+  .progress-dot.current { background: var(--primary); }
+  .progress-dot.future { background: var(--border); }
+
+  .progress-label {
+    font-family: var(--mono);
+    /*font-size: 9px;*/
+    color: var(--muted);
+    letter-spacing: 0.1em;
+    margin-left: 8px;
+  }
+</style>
+</head>
+<body>
+<div id="game-wrapper">
+
+  <div class="game-header">
+    <!-- <div class="game-eyebrow">Interactive Fiction · UX Industry Simulator · 2026</div> -->
+    <h1 class="game-title"><a href="#top">SHIP<span>IT</span></a></h1>
+    <div class="game-subtitle">A CHOOSE YOUR OWN ADVENTURE FOR DESIGNERS WHO KNOW BETTER</div>
+
+  <!-- PROGRESS TRACK -->
+  <div class="progress-track" id="progress-track">
+    <div class="progress-dot current" id="dot-0"></div>
+    <div class="progress-dot future" id="dot-1"></div>
+    <div class="progress-dot future" id="dot-2"></div>
+    <div class="progress-dot future" id="dot-3"></div>
+    <div class="progress-dot future" id="dot-4"></div>
+    <div class="progress-dot future" id="dot-5"></div>
+    <div class="progress-dot future" id="dot-6"></div>
+    <div class="progress-dot future" id="dot-7"></div>
+    <span class="progress-label">CHAPTER 1 OF 8</span>
+  </div>
+
+    <button class="start-over-link" id="start-over-btn" onclick="resetGame()">↺ start over</button>
+  </div>
+
+  <!-- SCENE -->
+  <div id="scene-container" class="scene-container"></div>
+
+  <div class="hud-spacer"></div>
+</div>
+
+<!-- FIXED BOTTOM HUD -->
+<div class="status-bar" id="status-bar">
+  <div class="stat">
+    <div class="stat-label">Sanity</div>
+    <div class="stat-bar"><div class="stat-fill sanity" id="bar-sanity" style="width:80%"></div></div>
+    <div class="stat-value" id="val-sanity">80</div>
+  </div>
+  <div class="stat">
+    <div class="stat-label">Credibility</div>
+    <div class="stat-bar"><div class="stat-fill credibility" id="bar-credibility" style="width:80%"></div></div>
+    <div class="stat-value" id="val-credibility">80</div>
+  </div>
+  <div class="stat">
+    <div class="stat-label">Caffeine</div>
+    <div class="stat-bar"><div class="stat-fill caffeine" id="bar-caffeine" style="width:45%"></div></div>
+    <div class="stat-value" id="val-caffeine">45</div>
+  </div>
+  <div class="stat">
+    <div class="stat-label">Deadline</div>
+    <div class="stat-bar"><div class="stat-fill deadline" id="bar-deadline" style="width:85%"></div></div>
+    <div class="stat-value" id="val-deadline">85</div>
+  </div>
+</div>
+
+<script>
+// ─── GAME STATE ──────────────────────────────────────────────────────────────
+const state = {
+  sanity: 80,
+  credibility: 80,
+  caffeine: 45,
+  deadlineProgress: 85,
+  chapter: 0,
+  flags: {} // track meaningful choices
+};
+
+// ─── SCENES ──────────────────────────────────────────────────────────────────
+const scenes = [
+
+  // INTRO — WHO ARE YOU
+  {
+    id: 'intro',
+    tag: 'Your employment record',
+    title: 'The Brief Life Of A Mid-Career UX Designer',
+    emoji: '🪪',
+    text: `You have five years of experience. Enough to know that "let's align on requirements" means the requirements don't exist yet. Enough to have opinions about typefaces. Not quite enough to have stopped doing this.
+
+You work at a mid-sized SaaS company. The kind with a culture deck and a kitchen stocked with four types of La Croix. Your title is Senior Product Designer. Your actual job is whatever the product team needs by tomorrow morning.
+
+You've shipped three products. Survived two reorgs. Sat through a full-day design sprint where the output was a list of words on a whiteboard that someone photographed and never looked at again.
+
+Your skills: <strong>Figma</strong>, <strong>stakeholder management</strong>, knowing when to fight and when to let Marcus have the voice note. You have a portfolio site. It has not been updated since 2022.
+
+Today's objective: <strong>ship something real</strong>. Not a deck. Not a prototype that will never be opened again after the demo. Something a real person can use to do their actual job.`,
+    choices: [
+      {
+        letter: 'A',
+        text: 'Get started.',
+        consequence: 'Good luck.',
+        type: 'good',
+        effects: {},
+        next: 'ch0'
+      },
+      {
+        letter: 'B',
+        text: 'Turn back.',
+        consequence: 'Too late. HR processed your parking permit this morning. The spot is labeled COMPACT ONLY. You drive a Subaru Outback.',
+        type: 'neutral',
+        effects: {},
+        next: 'ch0'
+      }
+    ]
+  },
+
+  // CHAPTER 0 — THE CALL
+  {
+    id: 'ch0',
+    tag: 'Monday, 9:02 AM',
+    title: 'The Last Minute Request',
+    emoji: '📱',
+    text: `Your Slack notification arrives at 9:02 AM. It's from <strong>Derek</strong>, Senior Product Manager, Peloton of toxic positivity, sender of 11 PM "quick syncs."
+
+<em>"Hey! Quick thing. Stakeholder review moved to TOMORROW 2pm. Need mockups for the new onboarding flow. All 14 screens. 'Fully realized.' Also the brand team updated the colors last week, FYI. Excited for this!! 🚀🚀"</em>
+
+You stare at your 13" laptop screen. Your last project's source files are on a server nobody has access to. The design system hasn't been touched since a contractor left in February.
+
+14 screens. Tomorrow. Fully realized.`,
+    choices: [
+      {
+        letter: 'A',
+        text: 'Reply "On it!" immediately and start panicking in private.',
+        consequence: 'Derek likes you. Your stomach does not.',
+        type: 'neutral',
+        effects: { sanity: -10, credibility: +5, caffeine: -15, deadline: -15 },
+        next: 'ch1_a'
+      },
+      {
+        letter: 'B',
+        text: 'Reply with a scoped-down proposal: "I can do 4 key screens with real flows. Here\'s why that\'s better."',
+        consequence: 'Risky. Derek hates being managed.',
+        type: 'neutral',
+        effects: { sanity: +5, credibility: +5, caffeine: -5, deadline: -5 },
+        next: 'ch1_b'
+      },
+      {
+        letter: 'C',
+        text: 'Go make coffee first. Read it again. Then reply.',
+        consequence: '+Caffeine. +Clarity. −5 minutes.',
+        type: 'good',
+        effects: { sanity: +5, credibility: -5, caffeine: +10, deadline: -10 },
+        next: 'ch1_c'
+      }
+    ]
+  },
+
+  // CHAPTER 1 ─ VARIANT A
+  {
+    id: 'ch1_a',
+    tag: 'Monday, 9:07 AM',
+    title: 'The Missing Files',
+    emoji: '🗂️',
+    text: `You open Figma. The last project file is named <em>"FINAL_v3_REVISED_USE_THIS_ONE_REAL_FINAL.fig"</em>
+
+You open it. It's a graveyard. 47 frames, none named. A component called "Button??" detached into 14 variants. An artboard that just says "ASK CARL" — Carl left the company.
+
+Then you find the onboarding flow. It's <strong>screenshots from a competitor's app, annotated in Comic Sans.</strong>
+
+This is your source file.`,
+    choices: [
+      {
+        letter: 'A',
+        text: 'Build from the screenshots. Trace them. Make them yours.',
+        consequence: 'Fast. Shameless. Effective.',
+        type: 'neutral',
+        effects: { sanity: -10, credibility: -15, caffeine: -10, deadline: -15 },
+        next: 'ch2'
+      },
+      {
+        letter: 'B',
+        text: 'Start fresh from the design system. Oh wait — find the design system first.',
+        consequence: 'The ethical path. Slower.',
+        type: 'good',
+        effects: { sanity: -5, credibility: -5, caffeine: -5, deadline: -10 },
+        next: 'ch2'
+      },
+      {
+        letter: 'C',
+        text: 'Slack the team: "Does anyone have the actual source files for onboarding?"',
+        consequence: 'Silence. Then: "I think Kyle had them?" Kyle is on parental leave.',
+        type: 'bad',
+        effects: { sanity: -15, credibility: 0, caffeine: 0, deadline: -5 },
+        next: 'ch2'
+      }
+    ]
+  },
+
+  // CHAPTER 1 ─ VARIANT B
+  {
+    id: 'ch1_b',
+    tag: 'Monday, 9:07 AM',
+    title: 'The Negotiation',
+    emoji: '💬',
+    text: `You send your scoped proposal. Derek replies in 4 minutes.
+
+<em>"Totally get it but leadership really needs to see the full picture. It's just mockups!! Can't you use AI or something? I saw a tweet that Figma has AI now."</em>
+
+Your Creative Director, <strong>Marcus</strong>, is now in the thread. He's added a reaction: 🤔
+
+Marcus sends a voice note. You can see it's 4 minutes and 12 seconds long. You do not press play.`,
+    choices: [
+      {
+        letter: 'A',
+        text: 'Play the voice note. You need to know what Marcus thinks.',
+        consequence: 'It\'s mostly about the "energy" of the brand.',
+        type: 'bad',
+        effects: { sanity: -15, credibility: 0, caffeine: 0, deadline: +5 },
+        next: 'ch2'
+      },
+      {
+        letter: 'B',
+        text: 'Ignore the voice note. Commit to the 4-screen version. Ship clarity.',
+        consequence: 'Credibility move. Marcus will notice.',
+        type: 'good',
+        effects: { sanity: +5, credibility: +10, caffeine: -5, deadline: -15 },
+        flags: { ignored_marcus: true },
+        next: 'ch2'
+      },
+      {
+        letter: 'C',
+        text: 'Reply to the thread: "Happy to align with Marcus directly — can we do 15 min?"',
+        consequence: 'Calendar invite arrives for 3pm. One hour before your work day ends.',
+        type: 'neutral',
+        effects: { sanity: -5, credibility: +5, caffeine: -10, deadline: -10 },
+        next: 'ch2'
+      }
+    ]
+  },
+
+  // CHAPTER 1 ─ VARIANT C
+  {
+    id: 'ch1_c',
+    tag: 'Monday, 9:15 AM',
+    title: 'The Caffeinated Clarity',
+    emoji: '☕',
+    text: `You make a pour-over. Slowly. Intentionally. You stare out the window for 90 seconds.
+
+You read the message again. You notice something: Derek said "stakeholder review" — not "design review." They're looking for direction, not specs. <strong>You don't need 14 screens. You need a story arc and 5 key moments.</strong>
+
+You open a blank doc. You write: "Onboarding job-to-be-done: make the user feel like they chose the right product before they've done anything."
+
+This is actually good. You feel briefly like yourself.`,
+    choices: [
+      {
+        letter: 'A',
+        text: 'Run with this framing. Build 5 narrative screens with strong rationale.',
+        consequence: 'High variance play. Might be brilliant.',
+        type: 'good',
+        effects: { sanity: +5, credibility: +10, caffeine: -10, deadline: -15 },
+        flags: { coffee_epiphany: true },
+        next: 'ch2'
+      },
+      {
+        letter: 'B',
+        text: 'Share the framing with Derek first to "align before building."',
+        consequence: 'He replies: "Love it!! Also can you add the 14 screens?"',
+        type: 'bad',
+        effects: { sanity: -15, credibility: -5, caffeine: -15, deadline: -5 },
+        next: 'ch2'
+      },
+      {
+        letter: 'C',
+        text: 'Build a quick wireframe deck instead. Safer. Less you.',
+        consequence: 'Safe. Forgettable. Fine.',
+        type: 'neutral',
+        effects: { sanity: -5, credibility: -10, caffeine: -5, deadline: -10 },
+        next: 'ch2'
+      }
+    ]
+  },
+
+  // CHAPTER 2 — THE DESIGN SYSTEM
+  {
+    id: 'ch2',
+    tag: 'Monday, 11:45 AM',
+    title: 'The Design System Of Broken Promises',
+    emoji: '🧩',
+    text: `You open the design system. It was built 18 months ago by a contractor named <strong>Priya</strong> who is now doing extremely well at a different company.
+
+The system has 3 typefaces. None of them are the new brand font. There's a component called "Card - OLD (do not use)" and one called "Card - NEW" that is visually identical.
+
+The color library has 47 shades of the primary blue. There's a "Dark Mode" page with one (1) frame that just says <em>"TODO"</em>.
+
+<strong>There are no developer tokens. There are no developers, actually.</strong> The dev team uses a different system they built themselves.`,
+    choices: [
+      {
+        letter: 'A',
+        text: 'Use what exists. Adapt. Deliver something that technically ships.',
+        consequence: 'The pragmatist path.',
+        type: 'neutral',
+        effects: { sanity: -10, credibility: -5, caffeine: -5, deadline: -5 },
+        next: 'ch3'
+      },
+      {
+        letter: 'B',
+        text: 'Spend 45 minutes trying to reconcile the system before giving up.',
+        consequence: 'You learn nothing except that past-you was also overwhelmed.',
+        type: 'bad',
+        effects: { sanity: -20, credibility: -10, caffeine: -10, deadline: -10 },
+        next: 'ch3'
+      },
+      {
+        letter: 'C',
+        text: 'Build your own mini-system for this project, from scratch, today.',
+        consequence: 'Bold. Possibly deranged. Also kind of the right call.',
+        type: 'good',
+        effects: { sanity: -15, credibility: +10, caffeine: -15, deadline: -10 },
+        flags: { new_system: true },
+        next: 'ch3'
+      }
+    ]
+  },
+
+  // CHAPTER 3 — MARCUS
+  {
+    id: 'ch3',
+    tag: 'Monday, 2:30 PM',
+    title: 'The Creative Director Appears',
+    emoji: '🎭',
+    text: `Marcus arrives in your DMs. He has listened to a podcast.
+
+<em>"I've been thinking about the brand story. What if the onboarding felt less like a product and more like a… <strong>threshold</strong>? Like the user is crossing into a new version of themselves. I'm seeing: slow dissolves, a lot of negative space, something that feels like Muji meets Dieter Rams but make it warm. Human. Maybe a little unexpected."</em>
+
+You look at your laptop. Your battery is at 14%. The charger is under your desk, wrapped around something. You are building 14 screens. Or 5. Or 4. It is 2:30 PM.
+
+Marcus adds: <em>"Also I wouldn't use that shade of blue you had last time. It felt… rectangular."</em>
+
+<strong>Rectangular.</strong>`,
+    choices: [
+      {
+        letter: 'A',
+        text: '"Love this direction, Marcus. I\'ll weave that feeling in." [continue working on what you were building]',
+        consequence: 'Professional. Dishonest. Effective.',
+        type: 'neutral',
+        effects: { sanity: -10, credibility: +5, caffeine: -10, deadline: -10 },
+        next: 'ch4'
+      },
+      {
+        letter: 'B',
+        text: 'Ask: "Can you point me to a reference that captures this threshold feeling?"',
+        consequence: 'He sends a photo of a door. In Japan. Unlabeled.',
+        type: 'bad',
+        effects: { sanity: -20, credibility: 0, caffeine: -5, deadline: -5 },
+        next: 'ch4'
+      },
+      {
+        letter: 'C',
+        text: '"Marcus, I\'m working against a hard deadline. Can we circle back to creative direction after the stakeholder review?"',
+        consequence: 'Silence. Then a 🙏 emoji. Unclear if approving or passive-aggressive.',
+        type: 'good',
+        effects: { sanity: -5, credibility: -10, caffeine: 0, deadline: -15 },
+        flags: { pushed_back_marcus: true },
+        next: 'ch4'
+      }
+    ]
+  },
+
+  // CHAPTER 4 — THE LAPTOP
+  {
+    id: 'ch4',
+    tag: 'Monday, 5:50 PM',
+    title: 'The Machine Protests',
+    emoji: '💻',
+    text: `It is 5:50 PM. You have 11 screens. You need 3 more. Or 5 fewer. Depends who you ask.
+
+Your laptop fan has been running at full capacity since noon. The screen has <strong>a faint pink gradient</strong> on the left side that appeared eight months ago and has been slowly expanding.
+
+Figma is using 94% of your CPU. A Chrome tab from this morning — a Medium article about "Flow State" — is using the other 6%.
+
+<strong>Your laptop freezes.</strong>
+
+Figma autosaves every 30 seconds. You last clicked something approximately 28 seconds ago.`,
+    choices: [
+      {
+        letter: 'A',
+        text: 'Wait. Do not touch anything. Count to 30.',
+        consequence: 'Autosave catches it. You lose 2 screens. You cry a normal amount.',
+        type: 'neutral',
+        effects: { sanity: -10, credibility: -10, caffeine: -10, deadline: -5 },
+        next: 'ch5'
+      },
+      {
+        letter: 'B',
+        text: 'Force-quit and reopen immediately.',
+        consequence: 'You lose 4 screens. The Medium tab is fine though.',
+        type: 'bad',
+        effects: { sanity: -20, credibility: -10, caffeine: -5, deadline: -15 },
+        next: 'ch5'
+      },
+      {
+        letter: 'C',
+        text: 'Close the Chrome tab first. Then wait. Then reopen Figma.',
+        consequence: 'You lose 1 screen. You feel like a professional.',
+        type: 'good',
+        effects: { sanity: +5, credibility: +5, caffeine: 0, deadline: -10 },
+        next: 'ch5'
+      }
+    ]
+  },
+
+  // CHAPTER 5 — THE FINAL HOUR
+  {
+    id: 'ch5',
+    tag: 'Tuesday, 1:15 PM',
+    title: 'The Forty-Five Minute Window',
+    emoji: '⏱️',
+    text: `It is 1:15 PM. The presentation is at 2:00 PM.
+
+You have <strong>something</strong>. It's not 14 screens. It's not the threshold feeling Marcus mentioned. It doesn't use the new brand colors because you couldn't find the hex codes.
+
+But it's clear. It has a point of view. The flows make sense. You annotated the key decision points. You wrote a one-paragraph rationale at the top.
+
+<strong>It is, given everything, actually pretty good.</strong>
+
+Derek sends a message: <em>"Quick thought — what if we added a gamification layer? Like points? Duolingo does it."</em>
+
+You have 45 minutes.`,
+    choices: [
+      {
+        letter: 'A',
+        text: 'Reply: "Great instinct — let\'s note that as a Phase 2 opportunity." Add nothing.',
+        consequence: 'Clean redirect. Derek feels heard. File stays intact.',
+        type: 'good',
+        effects: { sanity: -10, credibility: +5, caffeine: -5, deadline: -5 },
+        next: 'ch_6'
+      },
+      {
+        letter: 'B',
+        text: 'Ignore Derek. Focus. You\'re so close.',
+        consequence: 'He sends a follow-up: "Thoughts?" You still ignore it.',
+        type: 'neutral',
+        effects: { sanity: -15, credibility: -10, caffeine: 0, deadline: -10 },
+        next: 'ch_6'
+      },
+      {
+        letter: 'C',
+        text: 'Try to add a gamification concept. You have 45 minutes. What could go wrong.',
+        consequence: 'Everything. Everything could go wrong.',
+        type: 'bad',
+        effects: { sanity: -25, credibility: -15, caffeine: -10, deadline: -15 },
+        next: 'ch_6'
+      }
+    ]
+  },
+
+  // CHAPTER 6 — THE BALENCIAGA REQUEST
+  {
+    id: 'ch_6',
+    tag: 'Wednesday, 10:14 AM',
+    title: 'Make It Look Like Balenciaga',
+    emoji: '👟',
+    text: `You survived the stakeholder review. Nothing was approved, but nothing was killed. Progress, by this company's definition.
+
+Then the calendar invite arrives. Subject line: <em>"Homepage — Vision Alignment (15 min)"</em>. It is 47 minutes long.
+
+You join the call. The CEO, <strong>Richard</strong>, is there. Richard did an MBA. Richard once said the word "skeuomorphic" in a board meeting and has been coasting on it since.
+
+<em>"So I was on the Balenciaga website last night,"</em> Richard says. <em>"And it just felt… premium. Authoritative. Like you trusted them before they said anything. I want our homepage to feel like that."</em>
+
+You are a B2B SaaS company. Your product helps mid-market logistics firms manage freight invoices. Your primary user is a 47-year-old accounts payable manager named Carol who needs to reconcile 300 line items before end of quarter.
+
+<em>"We're not selling fashion,"</em> Richard continues, <em>"we're selling a <strong>feeling</strong>."</em>
+
+He shares his screen. It is the Balenciaga homepage. There is a diptych of a triple s sneaker and a white rose. There are no words. There is a lot of black.
+
+<em>"Like… this,"</em> he says. <em>"But for freight invoicing."</em>
+
+There is a silence on the call that lasts six full seconds.`,
+    choices: [
+      {
+        letter: 'A',
+        text: '"Richard, I love the instinct — let me translate that premium feeling into what trust means for Carol in our context."',
+        consequence: 'You reframe the brief without rejecting it. Textbook. Exhausting.',
+        type: 'good',
+        effects: { sanity: -15, credibility: +5, caffeine: -5, deadline: -10 },
+        flags: { balenciaga_reframe: true },
+        next: 'ch_6_follow'
+      },
+      {
+        letter: 'B',
+        text: 'Say nothing for a moment, then: "Can you say more about what \'premium\' means for a freight invoicing workflow?"',
+        consequence: 'Good UX instinct. Richard says "you know — like Balenciaga."',
+        type: 'neutral',
+        effects: { sanity: -10, credibility: -10, caffeine: 0, deadline: -5 },
+        next: 'ch_6_follow'
+      },
+      {
+        letter: 'C',
+        text: 'Agree enthusiastically. Open Figma. Start making everything black and serif.',
+        consequence: 'Richard will love the first draft. Carol will not be able to find the login button.',
+        type: 'bad',
+        effects: { sanity: -25, credibility: -15, caffeine: -10, deadline: -15 },
+        flags: { built_the_balenciaga: true },
+        next: 'ch_6_follow'
+      }
+    ]
+  },
+
+  // CHAPTER 6b — THE FOLLOW-UP
+  {
+    id: 'ch_6_follow',
+    tag: 'Wednesday, 3:30 PM',
+    title: 'The Brief That Cannot Be Briefed',
+    emoji: '📋',
+    text: `The call ends. You have notes. Your notes say: <em>"premium. authoritative. Balenciaga. black? brutal? trust."</em> And then, in your own handwriting from minute 38: <em>"what does Carol actually need."</em>
+
+You pull up your user research. There isn't much — a usability study from 2021, three NPS scores, and a Typeform that 4 people completed. But it's enough. Carol needs: fast login, clear invoice status, one-click exception flagging, and a dashboard she can screenshot for her manager.
+
+<strong>None of this is Balenciaga. All of it is right.</strong>
+
+You have a choice about what kind of designer you are today. The laptop fan starts up. It's ambient now, like weather.`,
+    choices: [
+      {
+        letter: 'A',
+        text: 'Build two concepts: "The Balenciaga" (what Richard wants) and "The Carol" (what the user needs). Present both. Let the tension speak.',
+        consequence: 'High risk. High integrity. Career-defining or career-limiting.',
+        type: 'good',
+        effects: { sanity: -10, credibility: -5, caffeine: -10, deadline: -10 },
+        flags: { showed_both: true },
+        next: 'ending_win'
+      },
+      {
+        letter: 'B',
+        text: 'Build the Carol version and dress it up with premium visual language — dark header, confident type, serious spacing. Ship it as "the Balenciaga approach applied to our context."',
+        consequence: 'The synthesis move. Diplomatically dishonest. Practically correct.',
+        type: 'neutral',
+        effects: { sanity: -20, credibility: 0, caffeine: -5, deadline: -15 },
+        next: 'ending_ship'
+      },
+      {
+        letter: 'C',
+        text: 'Ask if there\'s existing research on what Carol actually finds trustworthy. Buy yourself a week.',
+        consequence: 'There is no research. But you asked, which counts.',
+        type: 'neutral',
+        effects: { sanity: -10, credibility: -10, caffeine: 0, deadline: -5 },
+        next: 'ending_ship'
+      }
+    ]
+  },
+
+  // ENDINGS
+  {
+    id: 'ending_ship',
+    tag: 'Tuesday, 2:47 PM',
+    title: 'Shipped.',
+    emoji: '🚢',
+    text: `The presentation ends. There are nods. A VP says "this is solid direction." Marcus says the last screen has good "energy." Derek asks one question about gamification. You say "Phase 2." He nods.
+
+Nothing is approved. Nothing is rejected. A follow-up meeting is scheduled.
+
+<strong>But the work existed. You made it under impossible conditions with a dying laptop and a Comic Sans source file and a Creative Director who thinks colors have shapes. You made something real.</strong>
+
+That's the job. That's always been the job.
+
+You close your laptop. The pink gradient has spread slightly further to the left.`,
+    isEnding: true,
+    endingType: 'win',
+    endingLabel: 'YOU SHIPPED SOMETHING'
+  },
+
+  {
+    id: 'ending_chaos',
+    tag: 'Tuesday, 2:00 PM',
+    title: 'The Presentation',
+    emoji: '🔥',
+    text: `You walk into the call with a half-finished gamification concept bolted onto the back of your deck. Screen 14 says "POINTS?? (concept)" in 32pt bold.
+
+The VP opens with: "I love the direction of the first 11 screens."
+
+You never get to screen 14. The call ends early because Derek has another call. Marcus messages you afterward: <em>"Screen 4 had a very rectangular energy."</em>
+
+The work you did at 1:15 AM — the clear, honest, thoughtful work — that's what they saw. That's what mattered.
+
+<strong>The lesson, as always: the version of you who almost shipped on time was right. That version knew.</strong>
+
+Next time, trust her earlier.`,
+    isEnding: true,
+    endingType: 'lose',
+    endingLabel: 'CLOSE — BUT ALSO CORRECT'
+  },
+
+  // BALENCIAGA WIN ENDING
+  {
+    id: 'ending_win',
+    tag: 'Thursday, 2:15 PM',
+    title: 'The Designer In The Room',
+    emoji: '🏆',
+    text: `You present both concepts side by side. "The Balenciaga" on the left: cinematic, black, brutal type, zero navigation, deeply beautiful, completely unusable for freight invoice reconciliation. "The Carol" on the right: confident, spacious, fast, clear — with a dark header that actually does feel premium, because it's built on understanding rather than imitation.
+
+Richard looks at both for a long moment.
+
+<em>"The left one is beautiful,"</em> he says.
+
+<em>"It is,"</em> you say. <em>"It's also not designed for Carol. And Carol is why we exist."</em>
+
+Another four-second silence. Then the VP of Sales, who has not spoken the entire call: <em>"She's right."</em>
+
+Richard nods slowly. <em>"Okay. Let's go with the right one. But can we make the header a little more… Balenciaga?"</em>
+
+<strong>You have won something real today. Not the battle — the frame. You made the user visible in a room that had forgotten she existed.</strong>
+
+You darken the header by 8%. Richard says it's perfect. It was already perfect. You know this. You let him have it.
+
+That's the job too. Sometimes.`,
+    isEnding: true,
+    endingType: 'win',
+    endingLabel: 'YOU MADE CAROL VISIBLE'
+  }
+
+];
+
+// ─── PERSISTENCE ─────────────────────────────────────────────────────────────
+const SAVE_KEY = 'ux_adventure_save';
+
+function formatText(text) {
+  return text
+    .split(/\n\n+/)
+    .map(p => `<p>${p.replace(/\n/g, '<br>')}</p>`)
+    .join('');
+}
+
+function saveProgress(sceneId) {
+  localStorage.setItem(SAVE_KEY, JSON.stringify({ scene: sceneId, state: { ...state } }));
+  const btn = document.getElementById('start-over-btn');
+  if (btn) btn.style.display = 'block';
+}
+
+function loadProgress() {
+  try {
+    const raw = localStorage.getItem(SAVE_KEY);
+    if (!raw) return null;
+    const save = JSON.parse(raw);
+    if (!save.scene || !save.state) return null;
+    return save;
+  } catch (e) { return null; }
+}
+
+function clearProgress() {
+  localStorage.removeItem(SAVE_KEY);
+  const btn = document.getElementById('start-over-btn');
+  if (btn) btn.style.display = 'none';
+}
+
+// ─── SCENE INDEX ─────────────────────────────────────────────────────────────
+const sceneMap = {};
+scenes.forEach(s => { sceneMap[s.id] = s; });
+
+let currentScene = null;
+
+// ─── RENDER ──────────────────────────────────────────────────────────────────
+function renderScene(sceneId) {
+  const scene = sceneMap[sceneId];
+  if (!scene) return;
+  currentScene = scene;
+  _header.classList.toggle('scrolled', sceneId !== 'intro');
+
+  updateProgress();
+
+  const container = document.getElementById('scene-container');
+
+  if (scene.isEnding) {
+    renderEnding(scene, container);
+    return;
+  }
+
+  container.innerHTML = `
+    <div class="scene-tag">${scene.tag}</div>
+    <h2 class="scene-title">${scene.title}</h2>
+    <div class="scene-image">${scene.emoji}</div>
+    <div class="scene-text">${formatText(scene.text)}</div>
+    <div class="scene-divider"><span>your move</span></div>
+    <div class="choices-label">What do you do?</div>
+    <div class="choices">
+      ${scene.choices.map((c, i) => `
+        <button class="choice-btn" onclick="handleChoice(${i})">
+          <span class="choice-letter">OPTION ${c.letter}</span>
+          <div class="choice-text">${c.text}</div>
+        </button>
+      `).join('')}
+    </div>
+  `;
+
+  container.classList.remove('scene-container');
+  void container.offsetWidth;
+  container.classList.add('scene-container');
+
+  window.scrollTo({ top: 0, behavior: 'smooth' });
+}
+
+function renderEnding(scene, container) {
+  const isWin = scene.endingType === 'win';
+  container.innerHTML = `
+    <div class="scene-tag">${scene.tag}</div>
+    <h2 class="scene-title">${scene.title}</h2>
+    <div class="scene-image">${scene.emoji}</div>
+    <div class="scene-text">${formatText(scene.text)}</div>
+    <div class="outcome">
+      <div class="outcome-tag ${isWin ? 'win' : 'lose'}">${isWin ? '✓ OUTCOME' : '◎ OUTCOME'}</div>
+      <div class="outcome-title">${scene.endingLabel}</div>
+      <div class="outcome-text">
+        ${isWin
+          ? `Final stats — Sanity: ${state.sanity} | Credibility: ${state.credibility} | Caffeine: ${state.caffeine}<br><br>You survived another sprint. The work shipped. Derek is already writing a new message.`
+          : `Final stats — Sanity: ${state.sanity} | Credibility: ${state.credibility} | Caffeine: ${state.caffeine}<br><br>You'll be back at this desk tomorrow. The laptop will be warmer. The source files will still be missing.`
+        }
+      </div>
+      <button class="outcome-btn" onclick="resetGame()">PLAY AGAIN ↺</button>
+    </div>
+  `;
+  window.scrollTo({ top: 0, behavior: 'smooth' });
+}
+
+// ─── CHOICE HANDLER ───────────────────────────────────────────────────────────
+function handleChoice(index) {
+  const choice = currentScene.choices[index];
+  if (!choice) return;
+
+  // Disable all choice buttons immediately
+  document.querySelectorAll('.choice-btn').forEach(btn => {
+    btn.disabled = true;
+    btn.style.opacity = '0.4';
+    btn.style.cursor = 'default';
+    btn.style.transform = 'none';
+  });
+
+  // Highlight the chosen button
+  const chosenBtn = document.querySelectorAll('.choice-btn')[index];
+  if (chosenBtn) {
+    chosenBtn.style.opacity = '1';
+    chosenBtn.style.borderColor = 'var(--primary)';
+    chosenBtn.style.background = 'var(--surface-bright)';
+  }
+
+  // Capture old stats for delta display
+  const before = {
+    sanity: state.sanity,
+    credibility: state.credibility,
+    caffeine: state.caffeine,
+    deadline: state.deadlineProgress
+  };
+
+  // Apply effects to state
+  const effects = choice.effects;
+  state.sanity = Math.max(0, Math.min(100, state.sanity + (effects.sanity || 0)));
+  state.credibility = Math.max(0, Math.min(100, state.credibility + (effects.credibility || 0)));
+  state.caffeine = Math.max(0, Math.min(100, state.caffeine + (effects.caffeine || 0)));
+  state.deadlineProgress = Math.max(0, Math.min(100, state.deadlineProgress + (effects.deadline || 0)));
+
+  if (choice.flags) Object.assign(state.flags, choice.flags);
+  state.chapter++;
+
+  saveProgress(choice.next);
+
+  // Update HUD bars with animation
+  updateStats();
+
+  // Animate floating deltas on the HUD stat values
+  showStatDeltas(effects);
+
+  // Check for failure BEFORE showing the consequence panel
+  const failure = checkFailure();
+
+  // Build delta pills for the consequence panel
+  const statLabels = {
+    sanity: 'Sanity',
+    credibility: 'Credibility',
+    caffeine: 'Caffeine',
+    deadline: 'Deadline'
+  };
+  const statKeys = ['sanity', 'credibility', 'caffeine', 'deadline'];
+  const afterVals = {
+    sanity: state.sanity,
+    credibility: state.credibility,
+    caffeine: state.caffeine,
+    deadline: state.deadlineProgress
+  };
+
+  const deltaPills = statKeys.map(key => {
+    const delta = afterVals[key] - before[key];
+    if (delta === 0) return `<span class="consequence-delta-pill zero">${statLabels[key]} unchanged</span>`;
+    const sign = delta > 0 ? '+' : '';
+    const cls = delta > 0 ? 'pos' : 'neg';
+    return `<span class="consequence-delta-pill ${cls}">${statLabels[key]} ${sign}${delta}</span>`;
+  }).join('');
+
+  // Inject consequence panel below the choices
+  const container = document.getElementById('scene-container');
+  const panel = document.createElement('div');
+  panel.className = 'consequence-panel';
+  panel.id = 'consequence-panel';
+
+  // If failed: show consequence then game over button. If not: show Continue.
+  const actionBtn = failure
+    ? `<button class="continue-btn" onclick="renderGameOver('${failure}')" style="border-color:var(--bad);color:var(--bad)">See what happens →</button>`
+    : `<button class="continue-btn" onclick="advanceScene('${choice.next}')">Continue →</button>`;
+
+  panel.innerHTML = `
+    <div class="consequence-eyebrow">↳ What happens</div>
+    <div class="consequence-text">${choice.consequence}</div>
+    <div class="consequence-deltas">${deltaPills}</div>
+    ${actionBtn}
+  `;
+  container.appendChild(panel);
+
+  // Scroll consequence panel into view, clearing the fixed status bar
+  setTimeout(() => {
+    const panel = document.getElementById('consequence-panel');
+    const bar = document.querySelector('.status-bar');
+    const gap = panel.getBoundingClientRect().bottom - (window.innerHeight - bar.offsetHeight) + 16;
+    if (gap > 0) window.scrollBy({ top: gap, behavior: 'smooth' });
+  }, 100);
+}
+
+function advanceScene(nextId) {
+  const failure = checkFailure();
+  if (failure) {
+    renderGameOver(failure);
+  } else {
+    renderScene(nextId);
+  }
+}
+
+// ─── FAILURE CHECK ────────────────────────────────────────────────────────────
+function checkFailure() {
+  if (state.credibility <= 0) return 'credibility';
+  if (state.deadlineProgress <= 0) return 'deadline';
+  if (state.sanity <= 0) return 'sanity';
+  if (state.caffeine <= 0) return 'caffeine';
+  return null;
+}
+
+function renderGameOver(reason) {
+  const container = document.getElementById('scene-container');
+  const isLayoff = reason === 'credibility' || reason === 'deadline';
+
+  const layoffMessages = {
+    credibility: {
+      tag: '📧 Company-wide announcement',
+      title: 'Increased\nproductivity\nthrough Ai',
+      pill: 'Credibility reached zero',
+      body: `An all-hands invite lands in your calendar at 4:47 PM on a Friday. The subject line is: <em>"Exciting company update."</em>
+
+Your manager isn't on the invite.
+
+The CEO opens with a slide titled <strong>"Designing for the Future."</strong> There is a robot on it. The robot is smiling. He explains that AI tools have made certain roles redundant — specifically roles focused on <em>"early-stage visual exploration"</em> and <em>"stakeholder-facing mockup generation."</em>
+
+He does not say your name. He says <em>"impacted teammates"</em> three times.
+
+Your severance is six weeks. Your laptop has a pink gradient on the left side. You are asked to return it anyway.
+
+<strong>Derek sends you a LinkedIn connection request the same evening. The note says: "Let's stay in touch!! 🚀"</strong>`
+    },
+    deadline: {
+      tag: '📧 Company-wide announcement',
+      title: 'Increased\nproductivity\nthrough Ai',
+      pill: 'Deadline reached zero',
+      body: `The stakeholder review happens without your work. Someone pastes a competitor screenshot into the deck. It ships. No one notices the difference — or if they do, they don't say anything.
+
+Two weeks later, the VP of Product sends a company-wide note about <em>"streamlining the design function."</em> There's a reference to <strong>AI-assisted ideation tools</strong> that can generate <em>"initial direction in seconds."</em>
+
+The subtext is not subtle. The implication is you.
+
+Your offboarding meeting is 15 minutes long. Your manager thanks you for your contributions. You ask which contributions specifically. There is a pause.
+
+<strong>"All of them,"</strong> she says, and closes the Zoom window.`
+    }
+  };
+
+  const burnoutMessages = {
+    sanity: {
+      tag: '✉️ Your resignation letter',
+      title: 'You\nResign.',
+      pill: 'Sanity reached zero',
+      body: `You don't write a long letter. You write four sentences.
+
+<em>"I am resigning effective two weeks from today. I have genuinely valued working here. I wish the team well. Please don't schedule a farewell Zoom."</em>
+
+They schedule a farewell Zoom.
+
+You start working three days a week at <strong>Bloom & Co.</strong>, a florist on the corner two blocks from your apartment. You water things. You trim stems at a 45-degree angle. You learn the names of flowers you didn't know existed. Customers ask you questions you can answer completely and honestly.
+
+No one asks you to make anything look like Balenciaga.
+
+You make $14.50 an hour. You have no health insurance. You have a window with good light and a radio that only plays one station. The station plays songs you half-remember.
+
+<strong>It is, on balance, enough.</strong>`
+    },
+    caffeine: {
+      tag: '✉️ Your resignation letter',
+      title: 'You\nResign.',
+      pill: 'Caffeine reached zero',
+      body: `It happens on a Tuesday. You open your laptop, look at the Figma file, and close it again.
+
+Not dramatically. Not with any particular feeling. You just… close it.
+
+You sit for eleven minutes without doing anything. Then you open a new doc and type a resignation letter. The autocomplete tries to help. You turn it off.
+
+A friend tells you her cousin's pottery studio needs someone to work the front desk and occasionally throw clay on Thursdays. <strong>You take the job.</strong> The pay is $13 an hour. There is no dental. There is a cat named Gerald who sleeps on the glazing shelf.
+
+You stop checking Slack. After three weeks you notice your shoulders have dropped approximately two inches.
+
+You do not miss the design system. You do not miss Derek. You miss, occasionally, the work — the real work, the thinking-through-problems work. But not enough to go back.
+
+<strong>Gerald is a very good cat.</strong>`
+    }
+  };
+
+  const data = isLayoff ? layoffMessages[reason] : burnoutMessages[reason];
+  const type = isLayoff ? 'layoff' : 'burnout';
+
+  container.innerHTML = `
+    <div class="gameover-screen">
+      <h2 class="gameover-title ${type}">Game Over</h2>
+      <div class="gameover-stat ${type}">${data.pill}</div>
+      <hr />
+      <div class="gameover-tag ${type}">${data.tag}</div>
+      <h3 class="gameover-heading ${type}">${data.title.replace(/\n/g, '<br>')}</h3>
+      <div class="gameover-body">${formatText(data.body)}</div>
+      <button class="gameover-btn" onclick="resetGame()">Try again ↺</button>
+    </div>
+  `;
+
+  window.scrollTo({ top: 0, behavior: 'smooth' });
+}
+
+function showStatDeltas(effects) {
+  const map = {
+    sanity: 'val-sanity',
+    credibility: 'val-credibility',
+    caffeine: 'val-caffeine',
+    deadline: 'val-deadline'
+  };
+  Object.entries(map).forEach(([key, elId]) => {
+    const delta = effects[key] || 0;
+    if (delta === 0) return;
+    const el = document.getElementById(elId);
+    if (!el) return;
+    const floater = document.createElement('span');
+    floater.className = `stat-delta ${delta > 0 ? 'positive' : 'negative'}`;
+    floater.textContent = (delta > 0 ? '+' : '') + delta;
+    el.style.position = 'relative';
+    el.appendChild(floater);
+    setTimeout(() => floater.remove(), 2000);
+  });
+}
+
+// ─── STATS UPDATE ─────────────────────────────────────────────────────────────
+function updateStats() {
+  document.getElementById('bar-sanity').style.width = state.sanity + '%';
+  document.getElementById('val-sanity').textContent = state.sanity;
+
+  document.getElementById('bar-credibility').style.width = state.credibility + '%';
+  document.getElementById('val-credibility').textContent = state.credibility;
+
+  document.getElementById('bar-caffeine').style.width = state.caffeine + '%';
+  document.getElementById('val-caffeine').textContent = state.caffeine;
+
+  document.getElementById('bar-deadline').style.width = state.deadlineProgress + '%';
+  document.getElementById('val-deadline').textContent = state.deadlineProgress;
+}
+
+function updateProgress() {
+  const progressTrack = document.getElementById('progress-track');
+  if (currentScene?.id === 'intro') {
+    if (progressTrack) progressTrack.style.display = 'none';
+    return;
+  }
+  if (progressTrack) progressTrack.style.display = 'flex';
+
+  const chapterMap = {
+    'ch0': 0, 'ch1_a': 1, 'ch1_b': 1, 'ch1_c': 1,
+    'ch2': 2, 'ch3': 3, 'ch4': 4, 'ch5': 5,
+    'ch_6': 6, 'ch_6_follow': 7,
+    'ending_ship': 7, 'ending_chaos': 5,
+    'ending_win': 7
+  };
+  const current = chapterMap[currentScene?.id] ?? 0;
+
+  for (let i = 0; i <= 7; i++) {
+    const dot = document.getElementById('dot-' + i);
+    if (!dot) continue;
+    if (i < current) { dot.className = 'progress-dot done'; }
+    else if (i === current) { dot.className = 'progress-dot current'; }
+    else { dot.className = 'progress-dot future'; }
+  }
+
+  const label = document.querySelector('.progress-label');
+  if (label) label.textContent = `CHAPTER ${current + 1} OF 8`;
+}
+
+// ─── RESET ────────────────────────────────────────────────────────────────────
+function resetGame() {
+  clearProgress();
+  state.sanity = 65;
+  state.credibility = 55;
+  state.caffeine = 45;
+  state.deadlineProgress = 85;
+  state.chapter = 0;
+  state.flags = {};
+  updateStats();
+  renderScene('intro');
+}
+
+// ─── INIT ─────────────────────────────────────────────────────────────────────
+function getChapterParam() {
+  console.log('[DEBUG] href:', window.location.href);
+  console.log('[DEBUG] search:', window.location.search);
+  console.log('[DEBUG] hash:', window.location.hash);
+  console.log('[DEBUG] known scene IDs:', Object.keys(sceneMap));
+
+  const search = new URLSearchParams(window.location.search).get('chapter');
+  console.log('[DEBUG] search param "chapter":', search);
+  if (search && sceneMap[search]) return search;
+
+  const hash = new URLSearchParams(window.location.hash.replace(/^#/, '')).get('chapter');
+  console.log('[DEBUG] hash param "chapter":', hash);
+  if (hash && sceneMap[hash]) return hash;
+
+  const bare = window.location.hash.replace('#', '');
+  console.log('[DEBUG] bare hash:', bare, '| match:', !!sceneMap[bare]);
+  if (bare && sceneMap[bare]) return bare;
+
+  return null;
+}
+// Sticky header scroll behaviour
+const _header = document.querySelector('.game-header');
+window.addEventListener('scroll', () => {
+  if (!currentScene || currentScene.id !== 'intro') return;
+  _header.classList.toggle('scrolled', window.scrollY > 0);
+}, { passive: true });
+
+const _jumpTo = getChapterParam();
+console.log('[DEBUG] jumping to:', _jumpTo || 'ch0 (default)');
+if (_jumpTo) {
+  renderScene(_jumpTo);
+} else {
+  const _saved = loadProgress();
+  if (_saved && sceneMap[_saved.scene]) {
+    Object.assign(state, _saved.state);
+    updateStats();
+    const _failure = checkFailure();
+    if (_failure) {
+      renderGameOver(_failure);
+    } else {
+      const btn = document.getElementById('start-over-btn');
+      if (btn) btn.style.display = 'block';
+      renderScene(_saved.scene);
+    }
+  } else {
+    renderScene('intro');
+  }
+}
+</script>
+</body>
+</html>
