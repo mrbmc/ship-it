@@ -766,11 +766,9 @@
     background: var(--border);
   }
   .scene-divider span {
-    font-family: var(--mono);
-    font-size: 0.81rem;
+    font-family: var(--serif);
     color: var(--muted);
-    letter-spacing: 0.2em;
-    text-transform: uppercase;
+    text-transform: capitalize;
   }
 
   /* ── CURSOR ─────────────────────────────────────── */
@@ -1519,13 +1517,54 @@ function renderIntro() {
 
       <div class="intro-odds"><strong>36%</strong> of designers ship something real. The rest end up at a pottery studio front desk for $14.50 an hour. Gerald the cat is nice, though.</div>
 
-      <button class="intro-start-btn" onclick="startGame()">Begin your shift →</button>
+      <button class="intro-start-btn" onclick="winSound(); startGame()">Begin your shift →</button>
     </div>
   `;
   container.classList.remove('scene-container');
   void container.offsetWidth;
   container.classList.add('scene-container');
   window.scrollTo({ top: 0, behavior: 'smooth' });
+}
+
+// ─── SOUND ────────────────────────────────────────────────────────────────────
+const _audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+function chirp(freq) {
+  const osc = _audioCtx.createOscillator();
+  const gain = _audioCtx.createGain();
+  osc.connect(gain);
+  gain.connect(_audioCtx.destination);
+  osc.type = 'sine';
+  osc.frequency.setValueAtTime(freq, _audioCtx.currentTime);
+  gain.gain.setValueAtTime(0.18, _audioCtx.currentTime);
+  gain.gain.exponentialRampToValueAtTime(0.001, _audioCtx.currentTime + 0.12);
+  osc.start(_audioCtx.currentTime);
+  osc.stop(_audioCtx.currentTime + 0.12);
+}
+const CHIRP_FREQS = [392.00, 311.13, 261.63]; // G4, Eb4, C4
+
+const PROGRESSION_CHORDS = [
+  [246.94, 293.66, 369.99], // Bm:  B3, D4, F#4
+  [196.00, 246.94, 293.66], // G:   G3, B3, D4
+  [146.83, 185.00, 220.00], // D:   D3, F#3, A3
+  [220.00, 277.18, 329.63], // A:   A3, C#4, E4
+];
+
+let _chordIndex = 0;
+function chordG4() {
+  const freqs = PROGRESSION_CHORDS[_chordIndex++ % PROGRESSION_CHORDS.length];
+  freqs.forEach(freq => {
+    const osc = _audioCtx.createOscillator();
+    const gain = _audioCtx.createGain();
+    osc.connect(gain);
+    gain.connect(_audioCtx.destination);
+    osc.type = 'sine';
+    osc.frequency.setValueAtTime(freq, _audioCtx.currentTime);
+    gain.gain.setValueAtTime(0.001, _audioCtx.currentTime);
+    gain.gain.linearRampToValueAtTime(0.12, _audioCtx.currentTime + 0.18);
+    gain.gain.exponentialRampToValueAtTime(0.001, _audioCtx.currentTime + 0.9);
+    osc.start(_audioCtx.currentTime);
+    osc.stop(_audioCtx.currentTime + 0.9);
+  });
 }
 
 function startGame() {
@@ -1567,7 +1606,7 @@ function renderScene(sceneId) {
     <div class="choices-label">What do you do?</div>
     <div class="choices">
       ${scene.choices.map((c, i) => `
-        <button class="choice-btn" onclick="handleChoice(${i})">
+        <button class="choice-btn" onclick="handleChoice(${i})" onmouseenter="if(CHIRP_FREQS[${i}])chirp(CHIRP_FREQS[${i}])">
           <span class="choice-letter">OPTION ${c.letter}</span>
           <div class="choice-text">${c.text}</div>
         </button>
@@ -1584,6 +1623,7 @@ function renderScene(sceneId) {
 
 function renderEnding(scene, container) {
   const isWin = scene.endingType === 'win';
+  if (isWin) winSound();
   container.innerHTML = `
     <div class="scene-tag">${scene.tag}</div>
     <h2 class="scene-title">${scene.title}</h2>
@@ -1618,6 +1658,7 @@ function handleChoice(index) {
   // Disable all choice buttons immediately
   document.querySelectorAll('.choice-btn').forEach(btn => {
     btn.disabled = true;
+    btn.onmouseenter = null;
     btn.style.opacity = '0.4';
     btn.style.cursor = 'default';
     btn.style.transform = 'none';
@@ -1700,7 +1741,7 @@ function handleChoice(index) {
   btn.id = 'continue-btn';
   btn.className = 'continue-btn' + (failure ? ' danger' : '');
   btn.textContent = failure ? 'See what happens →' : 'Continue →';
-  btn.onclick = failure ? () => renderGameOver(failure) : () => advanceScene(choice.next);
+  btn.onclick = failure ? () => renderGameOver(failure) : () => { chordG4(); advanceScene(choice.next); };
   container.appendChild(btn);
 
   // Scroll consequence panel into view, clearing the fixed status bar
@@ -1730,7 +1771,43 @@ function checkFailure() {
   return null;
 }
 
+function winSound() {
+  // D major arpeggio: D3, F#3, A3, D4 — unhurried, low to high
+  [146.83, 185.00, 220.00, 293.66].forEach((freq, i) => {
+    const osc = _audioCtx.createOscillator();
+    const gain = _audioCtx.createGain();
+    osc.connect(gain);
+    gain.connect(_audioCtx.destination);
+    osc.type = 'sine';
+    const t = _audioCtx.currentTime + i * 0.22;
+    osc.frequency.setValueAtTime(freq, t);
+    gain.gain.setValueAtTime(0.001, t);
+    gain.gain.linearRampToValueAtTime(0.13, t + 0.15);
+    gain.gain.exponentialRampToValueAtTime(0.001, t + 1.2);
+    osc.start(t);
+    osc.stop(t + 1.2);
+  });
+}
+
+function gameOverSound() {
+  [123.47, 146.83, 185.00].forEach((freq, i) => { // Bm: B2, D3, F#3 — low, unresolved
+    const osc = _audioCtx.createOscillator();
+    const gain = _audioCtx.createGain();
+    osc.connect(gain);
+    gain.connect(_audioCtx.destination);
+    osc.type = 'sine';
+    osc.frequency.setValueAtTime(freq, _audioCtx.currentTime);
+    gain.gain.setValueAtTime(0.001, _audioCtx.currentTime);
+    gain.gain.linearRampToValueAtTime(0.10 - i * 0.02, _audioCtx.currentTime + 0.6);
+    gain.gain.linearRampToValueAtTime(0.08 - i * 0.02, _audioCtx.currentTime + 2.5);
+    gain.gain.exponentialRampToValueAtTime(0.001, _audioCtx.currentTime + 4.0);
+    osc.start(_audioCtx.currentTime);
+    osc.stop(_audioCtx.currentTime + 4.0);
+  });
+}
+
 function renderGameOver(reason) {
+  gameOverSound();
   const container = document.getElementById('scene-container');
   const isLayoff = reason === 'credibility' || reason === 'deadline';
 
