@@ -1528,17 +1528,27 @@ function renderIntro() {
 
 // ─── SOUND ────────────────────────────────────────────────────────────────────
 const _audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+
 function chirp(freq) {
   const osc = _audioCtx.createOscillator();
   const gain = _audioCtx.createGain();
+
+  const attack  = 0.008; // time to peak (seconds)
+  const peakVol = 0.4; 
+  const decay   = 0.06;  // time from peak to sustain level
+  const susVol = 0.1;  // gain level to hold at (0–1)
+  const release = 0.20;  // time to fade to silence after sustain
+
   osc.connect(gain);
   gain.connect(_audioCtx.destination);
   osc.type = 'sine';
   osc.frequency.setValueAtTime(freq, _audioCtx.currentTime);
-  gain.gain.setValueAtTime(0.18, _audioCtx.currentTime);
-  gain.gain.exponentialRampToValueAtTime(0.001, _audioCtx.currentTime + 0.12);
+  gain.gain.setValueAtTime(0.001, _audioCtx.currentTime);
+  gain.gain.linearRampToValueAtTime(peakVol, _audioCtx.currentTime + attack);
+  gain.gain.linearRampToValueAtTime(susVol, _audioCtx.currentTime + attack + decay);
+  gain.gain.exponentialRampToValueAtTime(0.001, _audioCtx.currentTime + attack + decay + release);
   osc.start(_audioCtx.currentTime);
-  osc.stop(_audioCtx.currentTime + 0.12);
+  osc.stop(_audioCtx.currentTime + attack + decay + release);
 }
 const CHIRP_FREQS = [392.00, 311.13, 261.63]; // G4, Eb4, C4
 
@@ -1549,9 +1559,30 @@ const PROGRESSION_CHORDS = [
   [220.00, 277.18, 329.63], // A:   A3, C#4, E4
 ];
 
-let _chordIndex = 0;
-function chordG4() {
-  const freqs = PROGRESSION_CHORDS[_chordIndex++ % PROGRESSION_CHORDS.length];
+function playOctaves(freq) {
+  [freq * 0.5, freq * 0.75, freq].forEach(f => {
+    const osc = _audioCtx.createOscillator();
+    const gain = _audioCtx.createGain();
+    const attack  = 0.008; // time to peak (seconds)
+    const peakVol = 0.4; 
+    const decay   = 0.06;  // time from peak to sustain level
+    const susVol = 0.1;  // gain level to hold at (0–1)
+    const release = 0.20;  // time to fade to silence after sustain
+
+    osc.connect(gain);
+    gain.connect(_audioCtx.destination);
+    osc.type = 'sine';
+    osc.frequency.setValueAtTime(freq, _audioCtx.currentTime);
+    gain.gain.setValueAtTime(0.001, _audioCtx.currentTime);
+    gain.gain.linearRampToValueAtTime(peakVol, _audioCtx.currentTime + attack);
+    gain.gain.linearRampToValueAtTime(susVol, _audioCtx.currentTime + attack + decay);
+    gain.gain.exponentialRampToValueAtTime(0.001, _audioCtx.currentTime + attack + decay + release);
+    osc.start(_audioCtx.currentTime);
+    osc.stop(_audioCtx.currentTime + attack + decay + release);
+  });
+}
+
+function playChord(freqs) {
   freqs.forEach(freq => {
     const osc = _audioCtx.createOscillator();
     const gain = _audioCtx.createGain();
@@ -1565,6 +1596,11 @@ function chordG4() {
     osc.start(_audioCtx.currentTime);
     osc.stop(_audioCtx.currentTime + 0.9);
   });
+}
+
+let _chordIndex = 0;
+function chordG4() {
+  playChord(PROGRESSION_CHORDS[_chordIndex++ % PROGRESSION_CHORDS.length]);
 }
 
 function startGame() {
@@ -1602,8 +1638,7 @@ function renderScene(sceneId) {
       loading="lazy"
     /></div>
     <div class="scene-text">${formatText(scene.text)}</div>
-    <div class="scene-divider"><span>your move</span></div>
-    <div class="choices-label">What do you do?</div>
+    <div class="choices-label">What's your move?</div>
     <div class="choices">
       ${scene.choices.map((c, i) => `
         <button class="choice-btn" onclick="handleChoice(${i})" onmouseenter="if(CHIRP_FREQS[${i}])chirp(CHIRP_FREQS[${i}])">
@@ -1654,6 +1689,7 @@ function renderEnding(scene, container) {
 function handleChoice(index) {
   const choice = currentScene.choices[index];
   if (!choice) return;
+  playOctaves(CHIRP_FREQS[index % CHIRP_FREQS.length]);
 
   // Disable all choice buttons immediately
   document.querySelectorAll('.choice-btn').forEach(btn => {
