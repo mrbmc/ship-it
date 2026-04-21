@@ -643,12 +643,11 @@
 
   /* ── CHOICES ────────────────────────────────────── */
   .choices-label {
-    font-family: var(--mono);
-    font-size: 0.875rem;
-    letter-spacing: 0.14em;
-    text-transform: uppercase;
+    font-family: var(--serif);
+    font-size: 1.5rem;
+    text-transform: capitalize;
     color: var(--muted);
-    margin-bottom: var(--space-s);
+    margin: var(--space-xl) 0 var(--space-m);
   }
 
   .choices {
@@ -749,26 +748,6 @@
   .outcome-btn:hover {
     opacity: 0.85;
     transform: translateY(-1px);
-  }
-
-  /* ── DIVIDER ────────────────────────────────────── */
-  .scene-divider {
-    display: flex;
-    align-items: center;
-    gap: var(--space-s);
-    margin: var(--space-m) 0;
-  }
-  .scene-divider::before,
-  .scene-divider::after {
-    content: '';
-    flex: 1;
-    height: 1px;
-    background: var(--border);
-  }
-  .scene-divider span {
-    font-family: var(--serif);
-    color: var(--muted);
-    text-transform: capitalize;
   }
 
   /* ── CURSOR ─────────────────────────────────────── */
