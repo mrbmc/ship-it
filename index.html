@@ -111,7 +111,7 @@
   }
 
   .game-eyebrow {
-    font-family: var(--mono);
+    font-family: var(--sans);
     font-size: 0.875rem;
     letter-spacing: 0.16em;
     color: var(--primary);
@@ -141,7 +141,7 @@
   }
 
   .game-subtitle {
-    font-family: var(--mono);
+    font-family: var(--sans);
     font-size: 0.92rem;
     color: var(--muted);
     margin-bottom: var(--space-s);
@@ -299,7 +299,7 @@
   }
 
   .consequence-eyebrow {
-    font-family: var(--mono);
+    font-family: var(--sans);
     font-size: 0.875rem;
     letter-spacing: 0.14em;
     text-transform: uppercase;
@@ -443,6 +443,7 @@
     font-weight: 500;
     min-width: 88px;
     flex-shrink: 0;
+    text-transform: uppercase;
   }
   .cast-desc { color: var(--text-dim); }
 
@@ -491,7 +492,7 @@
   }
 
   .gameover-tag {
-    font-family: var(--mono);
+    font-family: var(--sans);
     font-size: 0.875rem;
     letter-spacing: 0.16em;
     text-transform: uppercase;
@@ -527,13 +528,14 @@
     color: var(--muted);
   }
 
+
   .gameover-stat {
     display: inline-block;
-    font-family: var(--mono);
+    font-family: var(--sans);
     font-size: 0.875rem;
-    padding: 3px 10px;
+    padding: var(--space-s) 10px;
     border-radius: 3px;
-    margin-bottom: var(--space-m);
+    margin-bottom: var(--space-l);
   }
   .gameover-stat.layoff {
     background: rgba(191, 80, 64, 0.1);
@@ -544,6 +546,18 @@
     background: rgba(143, 163, 146, 0.08);
     color: var(--bad);
     border: 1px solid rgba(143, 163, 146, 0.2);
+  }
+  .gameover-stat h2 {
+    font-family: var(--serif);
+    font-weight: 400;
+    font-style: italic;
+    font-size: clamp(48px, 10vw, 84px);
+    line-height: 1.0;
+    letter-spacing: 0.01em;
+  }
+  .gameover-stat p {
+    margin: var(--space-m) 0  var(--space-s) var(--space-xs);
+    font-size: 1.2rem;
   }
 
   .gameover-btn {
@@ -579,7 +593,7 @@
   }
 
   .scene-tag {
-    font-family: var(--mono);
+    font-family: var(--sans);
     font-size: 0.875rem;
     letter-spacing: 0.13em;
     color: var(--muted);
@@ -703,7 +717,7 @@
   }
 
   .outcome-tag {
-    font-family: var(--mono);
+    font-family: var(--sans);
     font-size: 0.875rem;
     letter-spacing: 0.14em;
     text-transform: uppercase;
@@ -980,7 +994,7 @@ This is your source file.`,
       {
         letter: 'C',
         text: 'Slack the team: "Does anyone have the actual source files for onboarding?"',
-        consequence: 'Silence. Then: "I think Kyle had them?" Kyle is on parental leave.',
+        consequence: 'Silence. Then: "I think Priya had them?" Priya is on parental leave.',
         type: 'bad',
         effects: { sanity: -15, credibility: 0, caffeine: 0, deadline: -5 },
         next: 'ch2'
@@ -1081,7 +1095,7 @@ This is actually good. You feel briefly like yourself.`,
     title: 'The Design System Of Broken Promises',
     emoji: '🧩',
     image: 'Abandoned Design System.png',
-    text: `You open the design system. It was built 18 months ago by a contractor named <strong>Priya</strong> who is now doing extremely well at a different company.
+    text: `You open the design system. It was built 18 months ago by a contractor named <strong>Taylor</strong> who is now doing extremely well at a different company.
 
 The system has 3 typefaces. None of them are the new brand font. There's a component called "Card - OLD (do not use)" and one called "Card - NEW" that is visually identical.
 
@@ -1263,13 +1277,13 @@ You have 45 minutes.`,
 
 Then the calendar invite arrives. Subject line: <em>"Homepage — Vision Alignment (15 min)"</em>. It is 47 minutes long.
 
-You join the call. The CEO, <strong>Richard</strong>, is there. Richard did an MBA. Richard once said the word "skeuomorphic" in a board meeting and has been coasting on it since.
+You join the call. The CEO, <strong>Alex</strong>, is there. Alex did an MBA. Alex once said the word "skeuomorphic" in a board meeting and has been coasting on it since.
 
-<em>"So I was on the Balenciaga website last night,"</em> Richard says. <em>"And it just felt… premium. Authoritative. Like you trusted them before they said anything. I want our homepage to feel like that."</em>
+<em>"So I was on the Balenciaga website last night,"</em> Alex says. <em>"And it just felt… premium. Authoritative. Like you trusted them before they said anything. I want our homepage to feel like that."</em>
 
 You are a B2B SaaS company. Your product helps mid-market logistics firms manage freight invoices. Your primary user is a 47-year-old accounts payable manager named Carol who needs to reconcile 300 line items before end of quarter.
 
-<em>"We're not selling fashion,"</em> Richard continues, <em>"we're selling a <strong>feeling</strong>."</em>
+<em>"We're not selling fashion,"</em> Alex continues, <em>"we're selling a <strong>feeling</strong>."</em>
 
 He shares his screen. It is the Balenciaga homepage. There is a diptych of a triple s sneaker and a white rose. There are no words. There is a lot of black.
 
@@ -1279,7 +1293,7 @@ There is a silence on the call that lasts six full seconds.`,
     choices: [
       {
         letter: 'A',
-        text: '"Richard, I love the instinct — let me translate that premium feeling into what trust means for Carol in our context."',
+        text: '"Alex, I love the instinct — let me translate that premium feeling into what trust means for Carol in our context."',
         consequence: 'You reframe the brief without rejecting it. Textbook. Exhausting.',
         type: 'good',
         effects: { sanity: -15, credibility: +5, caffeine: -5, deadline: -10 },
@@ -1289,7 +1303,7 @@ There is a silence on the call that lasts six full seconds.`,
       {
         letter: 'B',
         text: 'Say nothing for a moment, then: "Can you say more about what \'premium\' means for a freight invoicing workflow?"',
-        consequence: 'Good UX instinct. Richard says "you know — like Balenciaga."',
+        consequence: 'Good UX instinct. Alex says "you know — like Balenciaga."',
         type: 'neutral',
         effects: { sanity: -10, credibility: -10, caffeine: 0, deadline: -5 },
         next: 'ch6_follow'
@@ -1297,7 +1311,7 @@ There is a silence on the call that lasts six full seconds.`,
       {
         letter: 'C',
         text: 'Agree enthusiastically. Open Figma. Start making everything black and serif.',
-        consequence: 'Richard will love the first draft. Carol will not be able to find the login button.',
+        consequence: 'Alex will love the first draft. Carol will not be able to find the login button.',
         type: 'bad',
         effects: { sanity: -25, credibility: -15, caffeine: -10, deadline: -15 },
         flags: { built_the_balenciaga: true },
@@ -1323,7 +1337,7 @@ You have a choice about what kind of designer you are today. The laptop fan star
     choices: [
       {
         letter: 'A',
-        text: 'Build two concepts: "The Balenciaga" (what Richard wants) and "The Carol" (what the user needs). Present both. Let the tension speak.',
+        text: 'Build two concepts: "The Balenciaga" (what Alex wants) and "The Carol" (what the user needs). Present both. Let the tension speak.',
         consequence: 'High risk. High integrity. Career-defining or career-limiting.',
         type: 'good',
         effects: { sanity: -10, credibility: -5, caffeine: -10, deadline: -10 },
@@ -1401,7 +1415,7 @@ Next time, trust her earlier.`,
     image: 'Quiet Victory.png',
     text: `You present both concepts side by side. "The Balenciaga" on the left: cinematic, black, brutal type, zero navigation, deeply beautiful, completely unusable for freight invoice reconciliation. "The Carol" on the right: confident, spacious, fast, clear — with a dark header that actually does feel premium, because it's built on understanding rather than imitation.
 
-Richard looks at both for a long moment.
+Alex looks at both for a long moment.
 
 <em>"The left one is beautiful,"</em> he says.
 
@@ -1409,11 +1423,11 @@ Richard looks at both for a long moment.
 
 Another four-second silence. Then the VP of Sales, who has not spoken the entire call: <em>"She's right."</em>
 
-Richard nods slowly. <em>"Okay. Let's go with the right one. But can we make the header a little more… Balenciaga?"</em>
+Alex nods slowly. <em>"Okay. Let's go with the right one. But can we make the header a little more… Balenciaga?"</em>
 
 <strong>You have won something real today. Not the battle — the frame. You made the user visible in a room that had forgotten she existed.</strong>
 
-You darken the header by 8%. Richard says it's perfect. It was already perfect. You know this. You let him have it.
+You darken the header by 8%. Alex says it's perfect. It was already perfect. You know this. You let him have it.
 
 That's the job too. Sometimes.`,
     isEnding: true,
@@ -1473,28 +1487,25 @@ function renderIntro() {
       <hr class="intro-divider">
 
       <div class="intro-hook">
-        <p>It is 11:47 PM on a Sunday.</p>
-        <p>Derek just sent a Slack. He needs 14 screens by 9 AM.</p>
-        <p>Kyle has the source files. Kyle is on parental leave.</p>
-        <p>Your CEO saw the Balenciaga website last night and has thoughts.</p>
-        <p>Your Creative Director just finished his third podcast of the day.</p>
-        <p>The design system is held together by a Figma file nobody can open and good intentions that have never been tested in production.</p>
+        <p>You have a design degree from RISD. You have shipped products used by millions of people. You have a portfolio of launches you can't show because of NDAs, for products that got sunsetted, for companies that pivoted.</p>
+        <p>What they didn't tell you in design school is that the job is mostly babysitting — protecting people who can't make anything from the consequences of their own ideas.</p>
       </div>
-
-      <div class="intro-mission">Your mission: ship something real — for Carol, 47, accounts payable, 300 freight invoices to reconcile before end of quarter. The only person in this building who actually needs the software to work.</div>
-
-      <hr class="intro-divider">
 
       <div class="intro-cast">
         <div class="intro-cast-label">Standing in your way</div>
         <div class="intro-cast-list">
           <div class="cast-row"><span class="cast-name">DEREK</span><span class="cast-desc">Senior PM. Rocket emojis. 11pm Slacks. Blameless optimism. No context.</span></div>
           <div class="cast-row"><span class="cast-name">SOREN</span><span class="cast-desc">Creative Director. Three podcasts deep. Wants it to feel more Muji.</span></div>
-          <div class="cast-row"><span class="cast-name">RICHARD</span><span class="cast-desc">CEO. Did an MBA. Saw the Balenciaga website last night.</span></div>
+          <div class="cast-row"><span class="cast-name">Priya</span><span class="cast-desc">Developer. On parental leave. Loves cats.</span></div>
+          <div class="cast-row"><span class="cast-name">Alex</span><span class="cast-desc">CEO. Did an MBA. Saw the Balenciaga website last night.</span></div>
         </div>
       </div>
 
-      <div class="intro-odds"><strong>36%</strong> of designers ship something real. The rest end up at a pottery studio front desk for $14.50 an hour. Gerald the cat is nice, though.</div>
+      <div class="intro-hook">
+        <p>Your user is Carol. She's 47, accounts payable, 300 freight invoices due end of quarter. She doesn't care about Balenciaga. She needs the software to work.</p>
+        <p>Ship something this week. For your job. For Carol.</p>
+        <p><strong>36%</strong> of designers ship something real in this game. The rest end up at a pottery studio front desk for $14.50 an hour with Gerald the cat.</p>
+      </div>
 
       <button class="intro-start-btn" onclick="winSound(); startGame()">Begin your shift →</button>
     </div>
@@ -1903,9 +1914,10 @@ You do not miss the design system. You do not miss Derek. You miss, occasionally
 
   container.innerHTML = `
     <div class="gameover-screen">
-      <h2 class="gameover-title ${type}">Game Over</h2>
-      <div class="gameover-stat ${type}">${data.pill}</div>
-      <hr />
+      <div class="gameover-stat ${type}">
+        <h2>Game Over</h2>
+        <p>${data.pill}</p>
+      </div>
       <div class="gameover-tag ${type}">${data.tag}</div>
       <div class="gameover-body">${formatText(data.body)}</div>
       <button class="gameover-btn" onclick="resetGame()">Try again ↺</button>

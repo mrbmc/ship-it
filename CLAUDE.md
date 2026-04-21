@@ -160,7 +160,7 @@ The scroll target is `#continue-btn`, not the panel, so the button is always vis
 - Does not editorialize about whether the choice was right
 - Often ends on an ironic detail
 
-**Tone:** Office Space energy. Darkly comic. The jokes come from recognition, not exaggeration. The characters (Derek, Soren, Richard) are types, not cartoons — they have internal logic.
+**Tone:** Office Space energy. Darkly comic. The jokes come from recognition, not exaggeration. The characters (Derek, Soren, Alex) are types, not cartoons — they have internal logic.
 
 **Writing style:** Plain prose. No jargon. Strong verbs. Short sentences in tense moments. The game text should read like a good short story, not game copy.
 
@@ -169,7 +169,7 @@ The scroll target is `#continue-btn`, not the panel, so the button is always vis
 ## Characters
 - **Derek** — Senior PM. Rocket emojis. 11pm Slack. Wants 14 screens by tomorrow. Blameless optimist.
 - **Soren** — Creative Director. Gender-neutral name, intentionally so. Just listened to a podcast. Thinks colors have shapes. Sends 4-minute voice notes. References thresholds, negative space, Muji, Dieter Rams.
-- **Richard** — CEO. Did an MBA. Saw the Balenciaga website last night. Uses "skeuomorphic" in board meetings.
+- **Alex** — CEO. Did an MBA. Saw the Balenciaga website last night. Uses "skeuomorphic" in board meetings.
 - **Carol** — The actual user. 47-year-old accounts payable manager. Needs to reconcile 300 freight invoices before end of quarter. Nobody in the room remembers she exists until you make them.
 - **Kyle** — On parental leave. Had the source files.
 - **Carl** — Left the company. One Figma artboard just says "ASK CARL."

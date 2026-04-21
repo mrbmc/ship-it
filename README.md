@@ -41,6 +41,6 @@ Valid scene IDs: `ch0`, `ch1_a`, `ch1_b`, `ch1_c`, `ch2`, `ch3`, `ch4`, `ch5`, `
 
 - **Derek** — Senior PM. Rocket emojis. Wants 14 screens by tomorrow morning.
 - **Soren** — Creative Director. Just listened to a podcast. Thinks colors have shapes.
-- **Richard** — CEO. Did an MBA. Saw the Rolex website last night.
+- **Alex** — CEO. Did an MBA. Saw the Rolex website last night.
 - **Carol** — The actual user. Nobody remembers she exists until you make them.
 - **Kyle** — On parental leave. Had the source files.
